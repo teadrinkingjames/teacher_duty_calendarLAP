@@ -39,8 +39,8 @@ public class AppWindow {
     // Window dimensions and positioning
     private static final int WINDOW_WIDTH = 1025;
     private static final int WINDOW_HEIGHT = 1100;
-    private static final int WINDOW_X = 100;
-    private static final int WINDOW_Y = 100;
+    private static final int WINDOW_X = 50;
+    private static final int WINDOW_Y = 50;
     
     // UI component dimensions
     private static final int INPUT_FIELD_COLUMNS = 40;
