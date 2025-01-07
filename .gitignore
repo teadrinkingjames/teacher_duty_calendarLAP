@@ -1,0 +1,35 @@
+# Exclude everything outside this Java project
+../../..
+
+# But include this Java project
+!.
+!src/
+!pom.xml
+!.gitignore
+
+# Compiled class files
+*.class
+
+# Build directory
+target/
+
+# IDE files
+.idea/
+*.iml
+.vscode/
+
+# Misc
+*.log
+
+# Package files
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# virtual machine crash logs
+hs_err_pid*
+replay_pid* 
