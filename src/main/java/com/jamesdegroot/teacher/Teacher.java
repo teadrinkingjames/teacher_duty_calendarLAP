@@ -55,6 +55,7 @@ public class Teacher {
     private double timeAllocation; // percentage of time allocated to teaching
     private TeacherScheduleStatusEnum classScheduleStatus; // status of the teacher's schedule
     private TeacherTypeEnum jobType; // type of the teacher's job
+    private int[] dutiesPerTerm = new int[4];  // One counter for each term
     private int dutiesThisSemester = 0; // counter for duties assigned this semester
     private int maxDutiesPerSemester;   // maximum number of duties per semester
 
@@ -326,9 +327,34 @@ public class Teacher {
 
     public void resetDutiesThisSemester() {
         dutiesThisSemester = 0;
+        for (int i = 0; i < 4; i++) {
+            dutiesPerTerm[i] = 0;
+        }
     }
 
     public List<String> getSchedule() {
         return schedule;
+    }
+
+    /**
+     * Increments the duty count for a specific term
+     * @param termNumber the term number (0-3)
+     */
+    public void incrementDutiesForTerm(int termNumber) {
+        if (termNumber >= 0 && termNumber < 4) {
+            dutiesPerTerm[termNumber]++;
+        }
+    }
+
+    /**
+     * Gets the number of duties for a specific term
+     * @param termNumber the term number (0-3)
+     * @return the number of duties for that term
+     */
+    public int getDutiesForTerm(int termNumber) {
+        if (termNumber >= 0 && termNumber < 4) {
+            return dutiesPerTerm[termNumber];
+        }
+        return 0;
     }
 }

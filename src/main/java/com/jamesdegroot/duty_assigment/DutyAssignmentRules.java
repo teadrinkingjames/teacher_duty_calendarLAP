@@ -6,10 +6,11 @@ import java.time.DayOfWeek;
 import java.util.List;
 import java.time.Month;
 import com.jamesdegroot.calendar.Day;
+import com.jamesdegroot.calendar.Duty;
 
 public class DutyAssignmentRules {
     // Constants for duty limits
-    private static final int MAX_DUTIES_PER_WEEK = 1;
+    private static final int MAX_DUTIES_PER_WEEK = 3;
     private static final int MAX_CONSECUTIVE_DAYS = 1;
     
     // Day rotation constants
@@ -23,6 +24,28 @@ public class DutyAssignmentRules {
     private static final int LUNCH_B_SLOT = 3;
     private static final int PERIOD_3_SLOT = 4;
     private static final int PERIOD_4_SLOT = 5;
+    private static final int PERIOD_5_SLOT = 6;
+    private static final int PERIOD_6_SLOT = 7;
+    private static final int PERIOD_7_SLOT = 8;
+    private static final int PERIOD_8_SLOT = 9;
+    private static final int PERIOD_9_SLOT = 10;
+    private static final int PERIOD_10_SLOT = 11;
+    
+    // Period mapping constants - maps duty slots to teacher schedule indices
+    private static final int[] PERIOD_TO_SCHEDULE_MAP = {
+        0,  // Period 1 -> Schedule index 0
+        1,  // Period 2 -> Schedule index 1
+        2,  // Lunch A -> Schedule index 2
+        3,  // Lunch B -> Schedule index 3
+        4,  // Period 3 -> Schedule index 4
+        5,  // Period 4 -> Schedule index 5
+        6,  // Period 5 -> Schedule index 6
+        7,  // Period 6 -> Schedule index 7
+        8,  // Period 7 -> Schedule index 8
+        9,  // Period 8 -> Schedule index 9
+        4,  // Period 9 -> Maps to Period 3 (same time slot)
+        9   // Period 10 -> Schedule index 9
+    };
     
     /**
      * Determines if it's a Day 1 or Day 2 based on the date
@@ -30,7 +53,35 @@ public class DutyAssignmentRules {
      * @return true if it's Day 1, false if Day 2
      */
     public static boolean isDay1(LocalDate date) {
-        return date.getDayOfMonth() % 2 != 0; // Odd days are Day 1
+        // Calculate the number of school days since the start of the term
+        Month month = date.getMonth();
+        LocalDate termStart;
+        
+        if (month.getValue() >= Month.SEPTEMBER.getValue() && month.getValue() <= Month.JANUARY.getValue()) {
+            // Fall semester
+            if (month.getValue() < Month.NOVEMBER.getValue()) {
+                // Term 1
+                termStart = LocalDate.of(date.getYear(), Month.SEPTEMBER, 1);
+            } else {
+                // Term 2
+                termStart = LocalDate.of(date.getYear(), Month.NOVEMBER, 1);
+            }
+        } else {
+            // Spring semester
+            if (month.getValue() < Month.APRIL.getValue()) {
+                // Term 3
+                termStart = LocalDate.of(date.getYear(), Month.FEBRUARY, 1);
+            } else {
+                // Term 4
+                termStart = LocalDate.of(date.getYear(), Month.APRIL, 1);
+            }
+        }
+        
+        // Calculate days since term start
+        long daysSinceTermStart = date.toEpochDay() - termStart.toEpochDay();
+        
+        // Every other school day should be Day 1
+        return daysSinceTermStart % 2 == 0;
     }
     
     /**
@@ -48,9 +99,10 @@ public class DutyAssignmentRules {
      * @param timeSlot The time slot for the duty
      * @param day The Day object containing school day information
      * @param isDay1Duty Whether this is a Day 1 duty assignment
+     * @param daysInWeek The list of days in the week
      * @return true if the teacher can be assigned the duty
      */
-    public static boolean canAssignDuty(Teacher teacher, int timeSlot, Day day, boolean isDay1Duty) {
+    public static boolean canAssignDuty(Teacher teacher, int timeSlot, Day day, boolean isDay1Duty, List<Day> daysInWeek) {
         // Skip non-school days
         if (!day.isSchoolDay()) {
             return false;
@@ -61,16 +113,54 @@ public class DutyAssignmentRules {
             return false;
         }
         
-        // Check if teacher has reached their maximum duties
-        if (teacher.getDutiesThisSemester() >= teacher.getMaxDutiesPerSemester()) {
-            return false;
-        }
-        
         // Check if teacher has any classes in this term
         if (!hasClassesInTerm(teacher, day.getDate())) {
             return false;
         }
+
+        // Check adjacent period rules
+        if (!canDoAdjacentPeriodDuty(teacher, timeSlot)) {
+            return false;
+        }
         
+        // Check weekly duty limit
+        if (exceedsWeeklyDutyLimit(teacher, day.getDate(), daysInWeek)) {
+            return false;
+        }
+        
+        return true;
+    }
+
+    /**
+     * Checks if a teacher can do a duty based on their schedule in adjacent periods
+     * @param teacher The teacher to check
+     * @param timeSlot The time slot for the duty
+     * @return true if the teacher can do the duty based on adjacent period rules
+     */
+    private static boolean canDoAdjacentPeriodDuty(Teacher teacher, int timeSlot) {
+        List<String> schedule = teacher.getSchedule();
+        int scheduleIndex = PERIOD_TO_SCHEDULE_MAP[timeSlot];
+
+        // For Lunch A duties (can't have class in Period 2)
+        if (timeSlot == LUNCH_A_SLOT) {
+            return schedule.get(PERIOD_2_SLOT).trim().isEmpty();
+        }
+        
+        // For Lunch B duties (can't have class in Period 3)
+        if (timeSlot == LUNCH_B_SLOT) {
+            return schedule.get(PERIOD_3_SLOT).trim().isEmpty();
+        }
+
+        // For other periods, check the period before
+        if (scheduleIndex > 0 && !schedule.get(scheduleIndex - 1).trim().isEmpty()) {
+            return false;
+        }
+
+        // For other periods, check the period after
+        if (scheduleIndex < schedule.size() - 1 && !schedule.get(scheduleIndex + 1).trim().isEmpty()) {
+            return false;
+        }
+
         return true;
     }
 
@@ -79,28 +169,14 @@ public class DutyAssignmentRules {
      */
     private static boolean hasClassDuringTimeSlot(Teacher teacher, int timeSlot) {
         List<String> schedule = teacher.getSchedule();
-        if (timeSlot >= 0 && timeSlot < schedule.size()) {
-            return !schedule.get(timeSlot).trim().isEmpty();
+        // Check if the time slot is valid
+        if (timeSlot < 0 || timeSlot >= PERIOD_TO_SCHEDULE_MAP.length) {
+            return false;
         }
-        return false;
-    }
-    
-    /**
-     * Checks if teacher has classes in adjacent periods
-     */
-    private static boolean hasAdjacentClasses(Teacher teacher, int timeSlot) {
-        List<String> schedule = teacher.getSchedule();
-        
-        // Check period before (if not first period)
-        if (timeSlot > 0 && !schedule.get(timeSlot - 1).trim().isEmpty()) {
-            return true;
+        int scheduleIndex = PERIOD_TO_SCHEDULE_MAP[timeSlot];
+        if (scheduleIndex >= 0 && scheduleIndex < schedule.size()) {
+            return !schedule.get(scheduleIndex).trim().isEmpty();
         }
-        
-        // Check period after (if not last period)
-        if (timeSlot < schedule.size() - 1 && !schedule.get(timeSlot + 1).trim().isEmpty()) {
-            return true;
-        }
-        
         return false;
     }
     
@@ -181,5 +257,35 @@ public class DutyAssignmentRules {
         }
         
         return false;
+    }
+
+    /**
+     * Checks if a teacher has exceeded their weekly duty limit
+     * @param teacher The teacher to check
+     * @param date The date of the duty
+     * @return true if the teacher has exceeded their weekly limit
+     */
+    private static boolean exceedsWeeklyDutyLimit(Teacher teacher, LocalDate date, List<Day> daysInWeek) {
+        int weeklyDuties = 0;
+        
+        // Count duties in the same week
+        for (Day day : daysInWeek) {
+            Duty[][] duties = day.getDutySchedule();
+            for (Duty[] timeSlot : duties) {
+                for (Duty duty : timeSlot) {
+                    if (duty != null) {
+                        // Check both Day 1 and Day 2 assignments
+                        if (duty.getDay1Teachers().contains(teacher.getName())) {
+                            weeklyDuties++;
+                        }
+                        if (duty.getDay2Teachers().contains(teacher.getName())) {
+                            weeklyDuties++;
+                        }
+                    }
+                }
+            }
+        }
+        
+        return weeklyDuties >= MAX_DUTIES_PER_WEEK;
     }
 } 

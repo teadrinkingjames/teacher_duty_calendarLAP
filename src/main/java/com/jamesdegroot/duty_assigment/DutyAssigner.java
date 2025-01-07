@@ -9,6 +9,8 @@ import java.time.Month;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Random;
+import java.time.DayOfWeek;
+import java.util.Collections;
 
 public class DutyAssigner {
     // Calendar and teacher references
@@ -37,125 +39,286 @@ public class DutyAssigner {
      */
     public void assignDuties() {
         List<Day> schoolDays = getSchoolDays();
+        System.out.println("Total school days: " + schoolDays.size());
         
-        // Create templates for each term
-        createTemplates(schoolDays);
-        
-        // Apply templates to all school days
-        for (Day day : schoolDays) {
-            applyTemplateToDay(day);
-        }
-    }
-    
-    /**
-     * Creates duty schedule templates for each term
-     */
-    private void createTemplates(List<Day> schoolDays) {
-        // Process each term
-        for (int term = 0; term < 4; term++) {
-            final int currentTerm = term;  // Make term effectively final for lambda
+        // First, create templates for all terms
+        for (int termIndex = 0; termIndex < 4; termIndex++) {
+            final int term = termIndex;
+            List<Day> termDays = schoolDays.stream()
+                .filter(day -> getTermNumber(day.getDate()) == term)
+                .toList();
             
-            // Reset duty counts for teachers at the start of each term
+            System.out.println("Term " + (term + 1) + " has " + termDays.size() + " school days");
+            
+            if (!termDays.isEmpty()) {
+                createTemplateForTerm(termDays, term);
+            }
+        }
+        
+        // Process each term separately
+        for (int termIndex = 0; termIndex < 4; termIndex++) {
+            final int currentTerm = termIndex;
+            System.out.println("\nProcessing Term " + (currentTerm + 1) + "...");
+            
+            // Reset all duty counts for this term
             for (Teacher teacher : teachers) {
                 teacher.resetDutiesThisSemester();
             }
             
-            // Get a sample week of days for this term
             List<Day> termDays = schoolDays.stream()
                 .filter(day -> getTermNumber(day.getDate()) == currentTerm)
                 .toList();
+                
+            if (termDays.isEmpty()) {
+                continue;
+            }
             
-            if (!termDays.isEmpty()) {
-                // Create templates for each weekday
-                for (int dayOfWeek = 1; dayOfWeek <= 5; dayOfWeek++) {
-                    final int currentDayOfWeek = dayOfWeek;
-                    List<Day> daysForThisWeekday = termDays.stream()
-                        .filter(day -> day.getDate().getDayOfWeek().getValue() == currentDayOfWeek)
-                        .toList();
-                    
-                    if (!daysForThisWeekday.isEmpty()) {
-                        Day sampleDay = daysForThisWeekday.get(0);
-                        
-                        // Create and assign duties for Day 1
-                        Day day1Template = new Day(sampleDay.getDate());
-                        Duty[][] originalDuties = sampleDay.getDutySchedule();
-                        for (int timeSlot = 0; timeSlot < originalDuties.length; timeSlot++) {
-                            for (int pos = 0; pos < originalDuties[timeSlot].length; pos++) {
-                                if (originalDuties[timeSlot][pos] != null) {
-                                    Duty templateDuty = new Duty(
-                                        originalDuties[timeSlot][pos].getName(),
-                                        originalDuties[timeSlot][pos].getDescription(),
-                                        originalDuties[timeSlot][pos].getRoom(),
-                                        originalDuties[timeSlot][pos].getTimeSlot()
-                                    );
-                                    day1Template.addDuty(timeSlot, pos, templateDuty);
-                                }
-                            }
-                        }
-                        assignDutiesForDay(day1Template, true);
-
-                        // Create and assign duties for Day 2
-                        Day day2Template = new Day(sampleDay.getDate());
-                        for (int timeSlot = 0; timeSlot < originalDuties.length; timeSlot++) {
-                            for (int pos = 0; pos < originalDuties[timeSlot].length; pos++) {
-                                if (originalDuties[timeSlot][pos] != null) {
-                                    Duty templateDuty = new Duty(
-                                        originalDuties[timeSlot][pos].getName(),
-                                        originalDuties[timeSlot][pos].getDescription(),
-                                        originalDuties[timeSlot][pos].getRoom(),
-                                        originalDuties[timeSlot][pos].getTimeSlot()
-                                    );
-                                    day2Template.addDuty(timeSlot, pos, templateDuty);
-                                }
-                            }
-                        }
-                        assignDutiesForDay(day2Template, false);
-
-                        // Store both templates for this term and weekday
-                        termTemplates[currentTerm].setDayTemplate(
-                            sampleDay.getDate().getDayOfWeek(),
-                            new Day[]{day1Template, day2Template}
-                        );
-                    }
+            boolean termProgress;
+            int termPass = 0;
+            int maxTermPasses = 50;
+            int noProgressCount = 0;
+            int maxNoProgressAllowed = 10;
+            
+            do {
+                termProgress = false;
+                termPass++;
+                
+                // Process days in sequential order first, then random order
+                List<Day> orderedDays = new ArrayList<>(termDays);
+                if (termPass > 4) {
+                    Collections.shuffle(orderedDays);
                 }
+                
+                // First pass: non-Hall duties
+                for (Day day : orderedDays) {
+                    boolean dayProgress = assignDutiesForDay(day, currentTerm);
+                    termProgress = termProgress || dayProgress;
+                }
+                
+                if (!termProgress) {
+                    noProgressCount++;
+                } else {
+                    noProgressCount = 0;
+                }
+                
+                // Print progress every 5 passes
+                if (termPass % 5 == 0) {
+                    System.out.println("Term " + (currentTerm + 1) + " - Pass " + termPass + 
+                        (termProgress ? " (made progress)" : " (no progress)"));
+                    printTeacherSummary();
+                }
+                
+            } while (termPass < maxTermPasses && noProgressCount < maxNoProgressAllowed && !allDutiesFilled(termDays));
+            
+            System.out.println("Completed Term " + (currentTerm + 1));
+        }
+        
+        System.out.println("\nDuty assignment completed!");
+    }
+    
+    private void printTeacherSummary() {
+        int totalTeachers = 0;
+        int teachersAtMax = 0;
+        int totalAssignedDuties = 0;
+        int totalRequiredDuties = 0;
+        
+        for (Teacher teacher : teachers) {
+            if (teacher.getMaxDutiesPerSemester() > 0) {
+                totalTeachers++;
+                totalAssignedDuties += teacher.getDutiesThisSemester();
+                totalRequiredDuties += teacher.getMaxDutiesPerSemester();
+                if (teacher.getDutiesThisSemester() >= teacher.getMaxDutiesPerSemester()) {
+                    teachersAtMax++;
+                }
+            }
+        }
+        
+        System.out.println(String.format("Progress: %d/%d teachers at max, %d/%d total duties assigned (%.1f%%)",
+            teachersAtMax, totalTeachers, totalAssignedDuties, totalRequiredDuties,
+            (totalAssignedDuties * 100.0) / totalRequiredDuties));
+    }
+    
+    private boolean allTeachersAtMaxDuties() {
+        return teachers.stream().allMatch(t -> 
+            (t.getDutiesThisSemester() * 2) >= t.getMaxDutiesPerSemester() || 
+            t.getMaxDutiesPerSemester() == 0
+        );
+    }
+    
+    /**
+     * Creates duty schedule template for a specific term
+     */
+    private void createTemplateForTerm(List<Day> termDays, final int term) {
+        // Initialize template for this term if needed
+        if (termTemplates[term] == null) {
+            termTemplates[term] = new DutyScheduleTemplate(term);
+        }
+        
+        // Create templates for each weekday
+        for (int dayOfWeek = 1; dayOfWeek <= 5; dayOfWeek++) {
+            final int currentDayOfWeek = dayOfWeek;
+            List<Day> daysForThisWeekday = termDays.stream()
+                .filter(d -> d.getDate().getDayOfWeek().getValue() == currentDayOfWeek)
+                .toList();
+                
+            if (!daysForThisWeekday.isEmpty()) {
+                Day sampleDay = daysForThisWeekday.get(0);
+                createDayTemplates(sampleDay, term, currentDayOfWeek);
             }
         }
     }
     
     /**
-     * Applies the appropriate template to a given day
+     * Assigns duties for a specific day
+     * @return true if any assignments were made
      */
-    private void applyTemplateToDay(Day day) {
-        int termNumber = getTermNumber(day.getDate());
+    private boolean assignDutiesForDay(Day day, final int term) {
+        LocalDate date = day.getDate();
+        Duty[][] dutySchedule = day.getDutySchedule();
+        boolean madeAssignment = false;
         
-        // Get the template for this day from the correct term
-        Day[] templates = termTemplates[termNumber].getDayTemplate(day.getDate().getDayOfWeek());
-        if (templates != null && templates.length > 0) {
-            Day template = templates[0]; // Use the first template since it has both Day 1 and Day 2 assignments
-            
-            // Copy duties from template to target day
-            Duty[][] templateDuties = template.getDutySchedule();
-            for (int timeSlot = 0; timeSlot < templateDuties.length; timeSlot++) {
-                for (int pos = 0; pos < templateDuties[timeSlot].length; pos++) {
-                    if (templateDuties[timeSlot][pos] != null) {
-                        Duty originalDuty = templateDuties[timeSlot][pos];
-                        Duty newDuty = new Duty(
-                            originalDuty.getName(),
-                            originalDuty.getDescription(),
-                            originalDuty.getRoom(),
-                            originalDuty.getTimeSlot()
-                        );
-                        
-                        // Copy both Day 1 and Day 2 teacher assignments from the template
-                        for (String teacher : originalDuty.getDay1Teachers()) {
-                            newDuty.addDay1Teacher(teacher);
-                        }
-                        for (String teacher : originalDuty.getDay2Teachers()) {
-                            newDuty.addDay2Teacher(teacher);
-                        }
-                        
-                        day.addDuty(timeSlot, pos, newDuty);
+        // First pass: Assign non-Hall duties
+        for (int timeSlot = 0; timeSlot < dutySchedule.length; timeSlot++) {
+            for (int position = 0; position < dutySchedule[timeSlot].length; position++) {
+                Duty duty = dutySchedule[timeSlot][position];
+                if (duty != null && !duty.getName().contains("Hall")) {
+                    if (duty.getDay1Teachers().isEmpty()) {
+                        boolean day1Assigned = assignTeacherToDuty(duty, timeSlot, date, true, term);
+                        madeAssignment = madeAssignment || day1Assigned;
                     }
+                    if (duty.getDay2Teachers().isEmpty()) {
+                        boolean day2Assigned = assignTeacherToDuty(duty, timeSlot, date, false, term);
+                        madeAssignment = madeAssignment || day2Assigned;
+                    }
+                }
+            }
+        }
+        
+        // Second pass: Assign Hall duties
+        for (int timeSlot = 0; timeSlot < dutySchedule.length; timeSlot++) {
+            for (int position = 0; position < dutySchedule[timeSlot].length; position++) {
+                Duty duty = dutySchedule[timeSlot][position];
+                if (duty != null && duty.getName().contains("Hall")) {
+                    if (duty.getDay1Teachers().isEmpty()) {
+                        boolean day1Assigned = assignTeacherToDuty(duty, timeSlot, date, true, term);
+                        madeAssignment = madeAssignment || day1Assigned;
+                    }
+                    if (duty.getDay2Teachers().isEmpty()) {
+                        boolean day2Assigned = assignTeacherToDuty(duty, timeSlot, date, false, term);
+                        madeAssignment = madeAssignment || day2Assigned;
+                    }
+                }
+            }
+        }
+        
+        return madeAssignment;
+    }
+    
+    /**
+     * Assigns a teacher to a specific duty
+     * @return true if an assignment was made
+     */
+    private boolean assignTeacherToDuty(Duty duty, int timeSlot, LocalDate date, boolean isDay1, int term) {
+        List<Teacher> availableTeachers = findAvailableTeachers(timeSlot, date, isDay1);
+        
+        if (!availableTeachers.isEmpty()) {
+            // Sort teachers by percentage of max duties completed (ascending)
+            availableTeachers.sort((t1, t2) -> {
+                // Handle null cases first
+                if (t1 == null) return -1;
+                if (t2 == null) return 1;
+                
+                // Calculate duty percentages
+                double t1Percent = t1.getMaxDutiesPerSemester() == 0 ? 1.0 : 
+                    (double)t1.getDutiesThisSemester() / t1.getMaxDutiesPerSemester();
+                double t2Percent = t2.getMaxDutiesPerSemester() == 0 ? 1.0 : 
+                    (double)t2.getDutiesThisSemester() / t2.getMaxDutiesPerSemester();
+                
+                // First compare by duty percentage
+                int percentComparison = Double.compare(t1Percent, t2Percent);
+                if (Math.abs(t1Percent - t2Percent) > 0.2) { // Only use percentage if significant difference
+                    return percentComparison;
+                }
+                
+                // If percentages are similar, prioritize teachers with more remaining duties
+                int remainingDuties1 = t1.getMaxDutiesPerSemester() - t1.getDutiesThisSemester();
+                int remainingDuties2 = t2.getMaxDutiesPerSemester() - t2.getDutiesThisSemester();
+                int dutiesComparison = Integer.compare(remainingDuties2, remainingDuties1);
+                if (dutiesComparison != 0) {
+                    return dutiesComparison;
+                }
+                
+                // If still equal, use teacher names to ensure consistent ordering
+                return t1.getName().compareTo(t2.getName());
+            });
+            
+            // Get the teacher with the lowest percentage of completed duties
+            Teacher selectedTeacher = availableTeachers.stream()
+                .filter(t -> t.getDutiesThisSemester() < t.getMaxDutiesPerSemester())
+                .findFirst()
+                .orElse(null);
+                
+            if (selectedTeacher != null) {
+                // Check if the teacher already has this duty assigned
+                boolean alreadyAssigned = false;
+                if (isDay1 && duty.getDay1Teachers().contains(selectedTeacher.getName())) {
+                    alreadyAssigned = true;
+                } else if (!isDay1 && duty.getDay2Teachers().contains(selectedTeacher.getName())) {
+                    alreadyAssigned = true;
+                }
+                
+                if (!alreadyAssigned) {
+                    // Assign the teacher to the duty
+                    if (isDay1) {
+                        duty.addDay1Teacher(selectedTeacher.getName());
+                    } else {
+                        duty.addDay2Teacher(selectedTeacher.getName());
+                    }
+                    
+                    // Increment both term and semester duty counts
+                    selectedTeacher.incrementDutiesForTerm(term);
+                    selectedTeacher.incrementDutiesThisSemester();
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    
+    /**
+     * Creates Day 1 and Day 2 templates for a specific day
+     */
+    private void createDayTemplates(Day sampleDay, int term, int dayOfWeek) {
+        // Create and assign duties for Day 1
+        Day day1Template = new Day(sampleDay.getDate());
+        Duty[][] originalDuties = sampleDay.getDutySchedule();
+        copyDutiesToTemplate(originalDuties, day1Template);
+        
+        // Create and assign duties for Day 2
+        Day day2Template = new Day(sampleDay.getDate());
+        copyDutiesToTemplate(originalDuties, day2Template);
+        
+        // Store both templates
+        termTemplates[term].setDayTemplate(
+            sampleDay.getDate().getDayOfWeek(),
+            new Day[]{day1Template, day2Template}
+        );
+    }
+    
+    /**
+     * Helper method to copy duties to a template
+     */
+    private void copyDutiesToTemplate(Duty[][] originalDuties, Day template) {
+        for (int timeSlot = 0; timeSlot < originalDuties.length; timeSlot++) {
+            for (int pos = 0; pos < originalDuties[timeSlot].length; pos++) {
+                if (originalDuties[timeSlot][pos] != null) {
+                    Duty templateDuty = new Duty(
+                        originalDuties[timeSlot][pos].getName(),
+                        originalDuties[timeSlot][pos].getDescription(),
+                        originalDuties[timeSlot][pos].getRoom(),
+                        originalDuties[timeSlot][pos].getTimeSlot()
+                    );
+                    template.addDuty(timeSlot, pos, templateDuty);
                 }
             }
         }
@@ -167,13 +330,13 @@ public class DutyAssigner {
     private int getTermNumber(LocalDate date) {
         int month = date.getMonthValue();
         
-        if (month >= Month.SEPTEMBER.getValue() && month <= Month.JANUARY.getValue()) {
+        if (month >= Month.SEPTEMBER.getValue() && month <= Month.DECEMBER.getValue()) {
             // Fall semester
-            return month < Month.NOVEMBER.getValue() ? 
+            return month <= Month.OCTOBER.getValue() ? 
                 DutyScheduleTemplate.TERM_1 : DutyScheduleTemplate.TERM_2;
-        } else if (month >= Month.FEBRUARY.getValue() && month <= Month.JUNE.getValue()) {
+        } else if (month >= Month.JANUARY.getValue() && month <= Month.JUNE.getValue()) {
             // Spring semester
-            return month < Month.APRIL.getValue() ? 
+            return month <= Month.MARCH.getValue() ? 
                 DutyScheduleTemplate.TERM_3 : DutyScheduleTemplate.TERM_4;
         } else {
             // Summer months - default to last term
@@ -190,7 +353,7 @@ public class DutyAssigner {
         
         return (month == Month.SEPTEMBER && dayOfMonth <= 7) ||  // Term 1
                (month == Month.NOVEMBER && dayOfMonth <= 7) ||   // Term 2
-               (month == Month.FEBRUARY && dayOfMonth <= 7) ||   // Term 3
+               (month == Month.JANUARY && dayOfMonth <= 7) ||    // Term 3
                (month == Month.APRIL && dayOfMonth <= 7);        // Term 4
     }
     
@@ -201,58 +364,6 @@ public class DutyAssigner {
         return calendar.getDaysOfYear().stream()
             .filter(Day::isSchoolDay)
             .toList();
-    }
-    
-    /**
-     * Assigns duties for a specific day
-     */
-    private void assignDutiesForDay(Day day, boolean isDay1) {
-        LocalDate date = day.getDate();
-        Duty[][] dutySchedule = day.getDutySchedule();
-        
-        // For each time slot
-        for (int timeSlot = 0; timeSlot < dutySchedule.length; timeSlot++) {
-            // For each duty position in the time slot
-            for (int position = 0; position < dutySchedule[timeSlot].length; position++) {
-                Duty duty = dutySchedule[timeSlot][position];
-                if (duty != null) {
-                    // Assign teachers for both Day 1 and Day 2
-                    assignTeacherToDuty(duty, timeSlot, date, true);  // Day 1
-                    assignTeacherToDuty(duty, timeSlot, date, false); // Day 2
-                }
-            }
-        }
-    }
-    
-    /**
-     * Assigns a teacher to a specific duty
-     */
-    private void assignTeacherToDuty(Duty duty, int timeSlot, LocalDate date, boolean isDay1) {
-        List<Teacher> availableTeachers = findAvailableTeachers(timeSlot, date, isDay1);
-        
-        if (!availableTeachers.isEmpty()) {
-            // Get number of teachers needed for this duty
-            int teachersNeeded = 1;  // One teacher per duty
-            
-            // Sort teachers by number of duties (ascending)
-            availableTeachers.sort((t1, t2) -> 
-                Integer.compare(t1.getDutiesThisSemester(), t2.getDutiesThisSemester()));
-            
-            // Assign up to teachersNeeded teachers, prioritizing those with fewer duties
-            for (int i = 0; i < Math.min(teachersNeeded, availableTeachers.size()); i++) {
-                Teacher selectedTeacher = availableTeachers.get(i);
-                
-                // Assign the teacher to the duty
-                if (isDay1) {
-                    duty.addDay1Teacher(selectedTeacher.getName());
-                } else {
-                    duty.addDay2Teacher(selectedTeacher.getName());
-                }
-                
-                // Increment the teacher's duty count
-                selectedTeacher.incrementDutiesThisSemester();
-            }
-        }
     }
     
     /**
@@ -268,13 +379,50 @@ public class DutyAssigner {
             .orElse(null);
             
         if (day != null) {
+            // Get all days in the same week
+            LocalDate weekStart = date.with(DayOfWeek.MONDAY);
+            LocalDate weekEnd = date.with(DayOfWeek.FRIDAY);
+            List<Day> daysInWeek = calendar.getDaysOfYear().stream()
+                .filter(d -> !d.getDate().isBefore(weekStart) && !d.getDate().isAfter(weekEnd))
+                .toList();
+            
             for (Teacher teacher : teachers) {
-                if (DutyAssignmentRules.canAssignDuty(teacher, timeSlot, day, isDay1)) {
+                if (DutyAssignmentRules.canAssignDuty(teacher, timeSlot, day, isDay1, daysInWeek)) {
                     availableTeachers.add(teacher);
                 }
             }
         }
         
         return availableTeachers;
+    }
+    
+    private boolean allDutiesFilled(List<Day> days) {
+        for (Day day : days) {
+            Duty[][] duties = day.getDutySchedule();
+            for (Duty[] timeSlot : duties) {
+                for (Duty duty : timeSlot) {
+                    if (duty != null) {
+                        if (duty.getDay1Teachers().isEmpty() || duty.getDay2Teachers().isEmpty()) {
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+    }
+    
+    private boolean allTermsHaveDutiesFilled(List<Day> allDays) {
+        for (int term = 0; term < 4; term++) {
+            final int currentTerm = term;
+            List<Day> termDays = allDays.stream()
+                .filter(day -> getTermNumber(day.getDate()) == currentTerm)
+                .toList();
+            
+            if (!termDays.isEmpty() && !allDutiesFilled(termDays)) {
+                return false;
+            }
+        }
+        return true;
     }
 } 
