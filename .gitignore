@@ -1,6 +1,3 @@
-# Exclude everything outside this Java project
-../../..
-
 # But include this Java project
 !.
 !src/
