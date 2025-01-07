@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.DayOfWeek;
 import java.util.List;
 import java.time.Month;
+import com.jamesdegroot.calendar.Day;
 
 public class DutyAssignmentRules {
     // Constants for duty limits
@@ -45,13 +46,13 @@ public class DutyAssignmentRules {
      * Checks if a teacher can be assigned a duty based on their schedule
      * @param teacher The teacher to check
      * @param timeSlot The time slot for the duty
-     * @param date The date of the duty
+     * @param day The Day object containing school day information
      * @param isDay1Duty Whether this is a Day 1 duty assignment
      * @return true if the teacher can be assigned the duty
      */
-    public static boolean canAssignDuty(Teacher teacher, int timeSlot, LocalDate date, boolean isDay1Duty) {
-        // Skip weekends
-        if (isWeekend(date)) {
+    public static boolean canAssignDuty(Teacher teacher, int timeSlot, Day day, boolean isDay1Duty) {
+        // Skip non-school days
+        if (!day.isSchoolDay()) {
             return false;
         }
         
@@ -66,21 +67,13 @@ public class DutyAssignmentRules {
         }
         
         // Check if teacher has any classes in this term
-        if (!hasClassesInTerm(teacher, date)) {
+        if (!hasClassesInTerm(teacher, day.getDate())) {
             return false;
         }
         
         return true;
     }
-    
-    /**
-     * Checks if the given date is a weekend
-     */
-    private static boolean isWeekend(LocalDate date) {
-        DayOfWeek day = date.getDayOfWeek();
-        return day == DayOfWeek.SATURDAY || day == DayOfWeek.SUNDAY;
-    }
-    
+
     /**
      * Checks if teacher has a class during the specified time slot
      */

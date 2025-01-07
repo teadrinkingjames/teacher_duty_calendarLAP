@@ -261,9 +261,17 @@ public class DutyAssigner {
     private List<Teacher> findAvailableTeachers(int timeSlot, LocalDate date, boolean isDay1) {
         List<Teacher> availableTeachers = new ArrayList<>();
         
-        for (Teacher teacher : teachers) {
-            if (DutyAssignmentRules.canAssignDuty(teacher, timeSlot, date, isDay1)) {
-                availableTeachers.add(teacher);
+        // Find the Day object for this date
+        Day day = calendar.getDaysOfYear().stream()
+            .filter(d -> d.getDate().equals(date))
+            .findFirst()
+            .orElse(null);
+            
+        if (day != null) {
+            for (Teacher teacher : teachers) {
+                if (DutyAssignmentRules.canAssignDuty(teacher, timeSlot, day, isDay1)) {
+                    availableTeachers.add(teacher);
+                }
             }
         }
         
