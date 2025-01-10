@@ -357,4 +357,22 @@ public class Teacher {
         }
         return 0;
     }
+
+    /**
+     * Checks if teacher has any duties in the given term
+     * @param term the term number (0-3)
+     * @return true if teacher has duties in this term
+     */
+    public boolean hasDutyInSemester(int term) {
+        return getDutiesForTerm(term) > 0;
+    }
+
+    /**
+     * Checks if teacher has any classes in the given term
+     * @param term the term number (0-3)
+     * @return true if teacher has classes in this term
+     */
+    public boolean hasClassInSemester(int term) {
+        return !schedule.stream().allMatch(String::isEmpty);
+    }
 }

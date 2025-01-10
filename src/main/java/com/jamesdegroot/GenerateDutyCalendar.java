@@ -27,6 +27,7 @@ public class GenerateDutyCalendar {
     private Calendar calendar;
     private List<String> warnings = new ArrayList<>();
     private DutyAssigner dutyAssigner;
+    private boolean debugOutput = false;  // Default to true for backward compatibility
     
     /**
      * Creates a new GenerateDutyCalendar instance.
@@ -37,6 +38,13 @@ public class GenerateDutyCalendar {
         calendar = new Calendar();
     }
     
+    public void setDebugOutput(boolean enabled) {
+        this.debugOutput = enabled;
+        if (dutyAssigner != null) {
+            dutyAssigner.setDebugOutput(enabled);
+        }
+    }
+    
     /**
      * Processes a teacher schedule file and updates the teacher list.
      * @param file The CSV file containing teacher schedules
@@ -44,7 +52,7 @@ public class GenerateDutyCalendar {
     public void processFile(File file) {
         this.selectedFile = file;
         teachers = ReadTeachersFromDisk.readTeachersNames(file.getAbsolutePath());
-        printSummary();
+        // printSummary(); //TODO: This takes a long time to run
     }
     
     /**
@@ -55,6 +63,16 @@ public class GenerateDutyCalendar {
     public void loadCalendar(File file) {
         ReadCalendarFromDisk.loadCalendarFromICS(calendar, file);
         System.out.println("Calendar loaded with " + calendar.getEvents().size() + " events");
+        
+        // Debug output for holidays
+        System.out.println("\nHolidays loaded:");
+        calendar.getEvents().forEach(event -> {
+            System.out.println(String.format("%s: %s to %s", 
+                event.getSummary(), 
+                event.getStartDate(), 
+                event.getEndDate()));
+        });
+        System.out.println();
         
         // Set start date to September 3rd
         LocalDate startDate = LocalDate.of(2024, 9, 3);
@@ -72,7 +90,7 @@ public class GenerateDutyCalendar {
         // Initialize the calendar days before printing
         calendar.initializeDaysOfYear();
         
-        printSchoolDays(startDate, endDate);
+        //calendar.printSchoolDays(startDate, endDate); //TODO: This takes a long time to run
     }
     
     /**
@@ -183,14 +201,14 @@ public class GenerateDutyCalendar {
         return calendar.isSchoolDay(date);
     }
     
-    /**
-     * Prints the school days for a given date range.
-     * @param startDate the start date of the range
-     * @param endDate the end date of the range
-     */
-    public void printSchoolDays(LocalDate startDate, LocalDate endDate) {
-        calendar.printSchoolDays(startDate, endDate);
-    }
+    // /**
+    //  * Prints the school days for a given date range.
+    //  * @param startDate the start date of the range
+    //  * @param endDate the end date of the range
+    //  */
+    // public void printSchoolDays(LocalDate startDate, LocalDate endDate) {
+    //     calendar.printSchoolDays(startDate, endDate);
+    // }
     
     /**
      * Gets the calendar.
@@ -205,6 +223,7 @@ public class GenerateDutyCalendar {
      */
     public void assignDuties() {
         dutyAssigner = new DutyAssigner(calendar, teachers);
+        dutyAssigner.setDebugOutput(debugOutput);
         dutyAssigner.assignDuties();
     }
     

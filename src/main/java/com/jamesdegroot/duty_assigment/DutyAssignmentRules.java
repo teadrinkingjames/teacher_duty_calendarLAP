@@ -24,26 +24,20 @@ public class DutyAssignmentRules {
     private static final int LUNCH_B_SLOT = 3;
     private static final int PERIOD_3_SLOT = 4;
     private static final int PERIOD_4_SLOT = 5;
-    private static final int PERIOD_5_SLOT = 6;
-    private static final int PERIOD_6_SLOT = 7;
-    private static final int PERIOD_7_SLOT = 8;
-    private static final int PERIOD_8_SLOT = 9;
-    private static final int PERIOD_9_SLOT = 10;
-    private static final int PERIOD_10_SLOT = 11;
     
     // Period mapping constants - maps duty slots to teacher schedule indices
     private static final int[] PERIOD_TO_SCHEDULE_MAP = {
         0,  // Period 1 -> Schedule index 0
         1,  // Period 2 -> Schedule index 1
-        2,  // Lunch A -> Schedule index 2
-        3,  // Lunch B -> Schedule index 3
-        4,  // Period 3 -> Schedule index 4
-        5,  // Period 4 -> Schedule index 5
-        6,  // Period 5 -> Schedule index 6
-        7,  // Period 6 -> Schedule index 7
-        8,  // Period 7 -> Schedule index 8
-        9,  // Period 8 -> Schedule index 9
-        4,  // Period 9 -> Maps to Period 3 (same time slot)
+        1,  // Lunch A -> Maps to Period 2 (same time slot)
+        2,  // Lunch B -> Maps to Period 3 (same time slot)
+        2,  // Period 3 -> Schedule index 2
+        3,  // Period 4 -> Schedule index 3
+        4,  // Period 5 -> Schedule index 4
+        5,  // Period 6 -> Schedule index 5
+        6,  // Period 7 -> Schedule index 6
+        7,  // Period 8 -> Schedule index 7
+        8,  // Period 9 -> Schedule index 8
         9   // Period 10 -> Schedule index 9
     };
     
@@ -110,21 +104,37 @@ public class DutyAssignmentRules {
         
         // Check if teacher has classes during the duty time slot
         if (hasClassDuringTimeSlot(teacher, timeSlot)) {
+            if (day.getDate().getMonthValue() == 1) { // Only debug January dates
+                System.out.printf("Teacher %s has class during time slot %d%n", 
+                    teacher.getName(), timeSlot + 1);
+            }
             return false;
         }
         
         // Check if teacher has any classes in this term
         if (!hasClassesInTerm(teacher, day.getDate())) {
+            if (day.getDate().getMonthValue() == 1) { // Only debug January dates
+                System.out.printf("Teacher %s has no classes in term for date %s%n", 
+                    teacher.getName(), day.getDate());
+            }
             return false;
         }
 
         // Check adjacent period rules
         if (!canDoAdjacentPeriodDuty(teacher, timeSlot)) {
+            if (day.getDate().getMonthValue() == 1) { // Only debug January dates
+                System.out.printf("Teacher %s cannot do adjacent period duty for time slot %d%n", 
+                    teacher.getName(), timeSlot + 1);
+            }
             return false;
         }
         
         // Check weekly duty limit
         if (exceedsWeeklyDutyLimit(teacher, day.getDate(), daysInWeek)) {
+            if (day.getDate().getMonthValue() == 1) { // Only debug January dates
+                System.out.printf("Teacher %s exceeds weekly duty limit for date %s%n", 
+                    teacher.getName(), day.getDate());
+            }
             return false;
         }
         
@@ -169,14 +179,22 @@ public class DutyAssignmentRules {
      */
     private static boolean hasClassDuringTimeSlot(Teacher teacher, int timeSlot) {
         List<String> schedule = teacher.getSchedule();
+        
         // Check if the time slot is valid
         if (timeSlot < 0 || timeSlot >= PERIOD_TO_SCHEDULE_MAP.length) {
+            System.out.printf("ERROR: Invalid time slot %d for teacher %s%n", timeSlot, teacher.getName());
             return false;
         }
+        
         int scheduleIndex = PERIOD_TO_SCHEDULE_MAP[timeSlot];
+        
         if (scheduleIndex >= 0 && scheduleIndex < schedule.size()) {
             return !schedule.get(scheduleIndex).trim().isEmpty();
         }
+        
+        // If we get here, the schedule index was out of bounds
+        System.out.printf("ERROR: Schedule index %d out of bounds for teacher %s (schedule size: %d)%n",
+            scheduleIndex, teacher.getName(), schedule.size());
         return false;
     }
     
@@ -225,7 +243,6 @@ public class DutyAssignmentRules {
      * Checks if a teacher has any classes in the given term
      */
     private static boolean hasClassesInTerm(Teacher teacher, LocalDate date) {
-        int month = date.getMonthValue();
         List<String> schedule = teacher.getSchedule();
         
         // Check if teacher has any classes in their schedule
@@ -241,22 +258,20 @@ public class DutyAssignmentRules {
             return false;
         }
         
-        // Check which term this date falls into and if teacher has classes in that term
-        if (month >= Month.SEPTEMBER.getValue() && month < Month.NOVEMBER.getValue()) {
-            // Term 1 - Fall Term 1 (September-October)
-            return true;
-        } else if (month >= Month.NOVEMBER.getValue() && month <= Month.JANUARY.getValue()) {
-            // Term 2 - Fall Term 2 (November-January)
-            return true;
-        } else if (month >= Month.FEBRUARY.getValue() && month < Month.APRIL.getValue()) {
-            // Term 3 - Spring Term 1 (February-March)
-            return true;
-        } else if (month >= Month.APRIL.getValue() && month <= Month.JUNE.getValue()) {
-            // Term 4 - Spring Term 2 (April-June)
-            return true;
+        // Term boundaries
+        LocalDate term1Start = LocalDate.of(2024, Month.SEPTEMBER, 3);
+        LocalDate term2Start = LocalDate.of(2024, Month.NOVEMBER, 1);
+        LocalDate term3Start = LocalDate.of(2025, Month.FEBRUARY, 1);
+        LocalDate term4Start = LocalDate.of(2025, Month.APRIL, 1);
+        LocalDate term4End = LocalDate.of(2025, Month.JUNE, 28);
+        
+        // Check which term this date falls into
+        if (date.isBefore(term1Start) || date.isAfter(term4End)) {
+            return false;
         }
         
-        return false;
+        // All terms are valid for teachers with classes
+        return true;
     }
 
     /**
@@ -266,6 +281,11 @@ public class DutyAssignmentRules {
      * @return true if the teacher has exceeded their weekly limit
      */
     private static boolean exceedsWeeklyDutyLimit(Teacher teacher, LocalDate date, List<Day> daysInWeek) {
+        // If teacher is under their semester limit, be more flexible with weekly limits
+        if (teacher.getDutiesThisSemester() < teacher.getMaxDutiesPerSemester() * 0.8) {
+            return false;
+        }
+        
         int weeklyDuties = 0;
         
         // Count duties in the same week
@@ -286,6 +306,12 @@ public class DutyAssignmentRules {
             }
         }
         
-        return weeklyDuties >= MAX_DUTIES_PER_WEEK;
+        // Allow more duties per week if teacher is under their semester limit
+        int maxWeeklyDuties = MAX_DUTIES_PER_WEEK;
+        if (teacher.getDutiesThisSemester() < teacher.getMaxDutiesPerSemester() * 0.5) {
+            maxWeeklyDuties += 1;  // Allow one extra duty per week for teachers under 50% of their limit
+        }
+        
+        return weeklyDuties >= maxWeeklyDuties;
     }
 } 

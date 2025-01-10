@@ -62,10 +62,17 @@ public class Holiday {
      * @return true if the holiday is a school day, false otherwise
      */
     public boolean isSchoolDay() {
-        return !summary.contains("PA Days") && 
-               !summary.contains("Holidays") && 
-               !summary.contains("Exams") &&
-               !summary.contains("Summer School");
+        String summaryUpper = summary.toUpperCase();
+        return !summaryUpper.contains("PA DAY") && 
+               !summaryUpper.contains("P.A. DAY") &&
+               !summaryUpper.contains("HOLIDAY") && 
+               !summaryUpper.contains("EXAM") &&
+               !summaryUpper.contains("BREAK") &&
+               !summaryUpper.contains("SUMMER") &&
+               !summaryUpper.contains("WINTER") &&
+               !summaryUpper.contains("MARCH") &&
+               !summaryUpper.contains("CHRISTMAS") &&
+               !summaryUpper.contains("THANKSGIVING");
     }
 
     /**

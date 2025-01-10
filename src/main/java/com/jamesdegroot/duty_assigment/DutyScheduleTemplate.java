@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class DutyScheduleTemplate {
     // Constants for terms
-    public static final int TERM_1 = 0;  // Fall Term 1
+    public static final int TERM_1 = 0;  // Fall Term 1 //TODO: this is a weird way of doing this
     public static final int TERM_2 = 1;  // Fall Term 2
     public static final int TERM_3 = 2;  // Spring Term 1
     public static final int TERM_4 = 3;  // Spring Term 2

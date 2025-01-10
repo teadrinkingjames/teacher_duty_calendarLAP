@@ -182,9 +182,16 @@ public class Calendar {
         LocalDate startDate = LocalDate.of(SCHOOL_YEAR_START_YEAR, SCHOOL_YEAR_START_MONTH, SCHOOL_YEAR_START_DAY);
         LocalDate endDate = LocalDate.of(SCHOOL_YEAR_END_YEAR, SCHOOL_YEAR_END_MONTH, SCHOOL_YEAR_END_DAY);
         
+        // Initialize counters for school days by month
+        int[] schoolDaysByMonth = new int[12];  // Index 0 = January, 11 = December
+        int[] totalDaysByMonth = new int[12];   // Track total days for comparison
+        
         LocalDate currentDate = startDate;
         while (!currentDate.isAfter(endDate)) {
             Day day = new Day(currentDate);
+            
+            // Count total days
+            totalDaysByMonth[currentDate.getMonthValue() - 1]++;
             
             // Set school day status based on weekends and holidays
             boolean isSchoolDay = true;
@@ -192,8 +199,8 @@ public class Calendar {
                 isSchoolDay = false;
             }
             for (Holiday event : events) {
+                // End date in ICS file is exclusive (the day after the holiday ends)
                 if (currentDate.equals(event.getStartDate()) || 
-                    currentDate.equals(event.getEndDate()) || 
                     (currentDate.isAfter(event.getStartDate()) && 
                      currentDate.isBefore(event.getEndDate()))) {
                     isSchoolDay = false;
@@ -201,6 +208,11 @@ public class Calendar {
                 }
             }
             day.setSchoolDay(isSchoolDay);
+            
+            // Count school days
+            if (isSchoolDay) {
+                schoolDaysByMonth[currentDate.getMonthValue() - 1]++;
+            }
             
             // Initialize duties if it's a school day
             if (isSchoolDay) {

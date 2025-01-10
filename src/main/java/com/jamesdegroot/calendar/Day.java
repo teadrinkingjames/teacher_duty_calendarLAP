@@ -1,6 +1,7 @@
 package com.jamesdegroot.calendar;
 
 import java.time.LocalDate;
+import java.time.Month;
 
 /**
  * Represents a day in the calendar.
@@ -96,6 +97,35 @@ public class Day {
      */
     public boolean isHoliday() {
         return isHoliday;
+    }
+
+    /**
+     * Checks if this is a Day 1 in the schedule rotation
+     * @return true if Day 1, false if Day 2
+     */
+    public boolean isDay1() {
+        return com.jamesdegroot.duty_assigment.DutyAssignmentRules.isDay1(date);
+    }
+
+    /**
+     * Gets the term number (0-3) for this day
+     * @return term number (0 for Term 1, 1 for Term 2, etc)
+     */
+    public int getTermNumber() {
+        LocalDate term1Start = LocalDate.of(2024, Month.SEPTEMBER, 3);
+        LocalDate term2Start = LocalDate.of(2024, Month.NOVEMBER, 7);
+        LocalDate term3Start = LocalDate.of(2025, Month.FEBRUARY, 1);
+        LocalDate term4Start = LocalDate.of(2025, Month.APRIL, 8);
+        LocalDate term4End = LocalDate.of(2025, Month.JUNE, 28);
+        
+        if (date.isBefore(term1Start) || date.isAfter(term4End)) {
+            return 3; // Default to Term 4 if outside school year
+        }
+        
+        if (date.isBefore(term2Start)) return 0;
+        if (date.isBefore(term3Start)) return 1;
+        if (date.isBefore(term4Start)) return 2;
+        return 3;
     }
 
     /**

@@ -101,7 +101,7 @@ public class AppWindow {
     public AppWindow(GenerateDutyCalendar appLogic) {
         this.appLogic = appLogic;
         initialize();
-        redirectSystemOut();
+        //redirectSystemOut();
     }
 
     /**
@@ -160,11 +160,11 @@ public class AppWindow {
     /**
      * Redirects the system output to the console output.
      */
-    private void redirectSystemOut() {
-        PrintStream printStream = new PrintStream(new CustomOutputStream(consoleOutput));
-        System.setOut(printStream);
-        System.setErr(printStream);
-    }
+    // private void redirectSystemOut() { // TODO: Remove this
+    //     PrintStream printStream = new PrintStream(new CustomOutputStream(consoleOutput));
+    //     System.setOut(printStream);
+    //     System.setErr(printStream);
+    // }
 
     /**
      * Shows the main window.
@@ -473,7 +473,7 @@ public class AppWindow {
         System.out.println("=".repeat(GenerateDutyCalendar.NUM_OF_SEPERATORS_CHAR));
         
         // Print the final schedule
-        appLogic.printSchedule();
+        // appLogic.printSchedule(); //TODO: This takes a long time to run, Should not be here
     }
 
     private void styleButton(JButton button) {
