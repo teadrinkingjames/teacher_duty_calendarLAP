@@ -144,7 +144,7 @@ public class DutyAssigner {
             for (String classPeriod : classSchedule) {
                 // Store this in a list of strings
                 classPeriods.add(classPeriod);
-                System.out.println("Class Period: " + classPeriod);
+                //System.out.println("Class Period: " + classPeriod);
             }
             
             // begin assigning duties
@@ -178,6 +178,7 @@ public class DutyAssigner {
                         ));
                     
                     // Print patterns in order by weekday
+                    /*
                     System.out.println("Term " + term + " pattern counts:");
                     for (DayOfWeek day : DayOfWeek.values()) {
                         if (day != DayOfWeek.SATURDAY && day != DayOfWeek.SUNDAY) {
@@ -189,12 +190,75 @@ public class DutyAssigner {
                                 patternCounts.getOrDefault(day2Pattern, 0L));
                         }
                     }
+                    */
+                    // now we have the counts of the types of days of the week
+                    // we know the value of each duty in each type of day
+                    
+                    // now we need to assign the duties to the teacher
+                    // go through the days of the week, and through every duty in the day
+                    
+                    // check if the duty is already assigned to the teacher
+                    // if it is, skip to the next duty
+                    // if it is not, assign the duty to the teacher
+                    // if the teacher has no more duties needed, break the loop
+
+                for (Day day : days) {
+                    Duty[][] dutySchedule = day.getDutySchedule();
+                    
+                    // First pass: Try to assign non-Hall duties
+                    for (int timeSlot = 0; timeSlot < dutySchedule.length; timeSlot++) {
+                        for (int pos = 0; pos < dutySchedule[timeSlot].length; pos++) {
+                            Duty duty = dutySchedule[timeSlot][pos];
+                            if (duty != null && !duty.getName().contains("Hall") && !teacher.hasDutyAssigned(duty)) {
+                                if (numberOfDutiesNeeded > 0) {
+                                    DayPattern pattern = getDayPattern(day.getDate().getDayOfWeek(), day.isDay1());
+                                    int patternCount = termPatternGroups.get(term).get(pattern).size();
+                                    
+                                    // Check if assigning this duty would exceed the teacher's limit
+                                    if (teacher.getDutiesThisSemester() + patternCount <= teacher.getMaxDutiesPerSemester()) {
+                                        teacher.assignDuty(duty, patternCount);
+                                        numberOfDutiesNeeded -= patternCount;
+                                        System.out.println("Assigned duty: " + duty.getName() + " to teacher: " + teacher.getName() +
+                                            " (worth " + patternCount + " duties, total now: " + teacher.getDutiesThisSemester() + ")");
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    
+                    // Second pass: Assign Hall duties if still needed
+                    if (numberOfDutiesNeeded > 0) {
+                        for (int timeSlot = 0; timeSlot < dutySchedule.length; timeSlot++) {
+                            for (int pos = 0; pos < dutySchedule[timeSlot].length; pos++) {
+                                Duty duty = dutySchedule[timeSlot][pos];
+                                if (duty != null && duty.getName().contains("Hall") && !teacher.hasDutyAssigned(duty)) {
+                                    if (numberOfDutiesNeeded > 0) {
+                                        DayPattern pattern = getDayPattern(day.getDate().getDayOfWeek(), day.isDay1());
+                                        int patternCount = termPatternGroups.get(term).get(pattern).size();
+                                        
+                                        // Check if assigning this duty would exceed the teacher's limit
+                                        if (teacher.getDutiesThisSemester() + patternCount <= teacher.getMaxDutiesPerSemester()) {
+                                            teacher.assignDuty(duty, patternCount);
+                                            numberOfDutiesNeeded -= patternCount;
+                                            System.out.println("Assigned hall duty: " + duty.getName() + " to teacher: " + teacher.getName() +
+                                                " (worth " + patternCount + " duties, total now: " + teacher.getDutiesThisSemester() + ")");
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    
+                    if (numberOfDutiesNeeded == 0) {
+                        break; // Exit if the teacher has no more duties needed
+                    }
                 }
-            }
-        }
+                } // end of term loop
+            } // end of semester loop
+        } // end of teacher loop
         
         System.out.println("Duty assignment completed!");
-    }
+    } // end of assignDuties
     
     /**
      * Gets a list of all school days from the calendar

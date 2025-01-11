@@ -2,6 +2,7 @@ package com.jamesdegroot.teacher;
 
 import java.util.List;
 import java.util.ArrayList;
+import com.jamesdegroot.calendar.Duty;
 
 public class Teacher {
     // Schedule constants
@@ -374,5 +375,23 @@ public class Teacher {
      */
     public boolean hasClassInSemester(int term) {
         return !schedule.stream().allMatch(String::isEmpty);
+    }
+
+    /**
+     * Assigns a duty to this teacher
+     * @param duty the duty to assign
+     * @param patternCount number of times this type of day occurs
+     */
+    public void assignDuty(Duty duty, int patternCount) {
+        dutiesThisSemester += patternCount;
+    }
+
+    /**
+     * Checks if teacher has this duty assigned
+     * @param duty the duty to check
+     * @return true if teacher has this duty
+     */
+    public boolean hasDutyAssigned(Duty duty) {
+        return duty.getDay1Teachers().contains(name) || duty.getDay2Teachers().contains(name);
     }
 }
