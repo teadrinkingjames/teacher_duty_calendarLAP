@@ -18,9 +18,6 @@ public class Main {
         // Load test data automatically
         DutyAssigner.loadTestData(appLogic);
         
-        // Disable debug output for better performance
-        appLogic.setDebugOutput(false);
-        
         window.show();
     }
 } 

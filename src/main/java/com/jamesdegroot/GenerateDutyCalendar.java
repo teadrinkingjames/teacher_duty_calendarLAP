@@ -27,7 +27,6 @@ public class GenerateDutyCalendar {
     private Calendar calendar;
     private List<String> warnings = new ArrayList<>();
     private DutyAssigner dutyAssigner;
-    private boolean debugOutput = false;  // Default to true for backward compatibility
     
     /**
      * Creates a new GenerateDutyCalendar instance.
@@ -36,13 +35,6 @@ public class GenerateDutyCalendar {
     public GenerateDutyCalendar() {
         teachers = new ArrayList<>();
         calendar = new Calendar();
-    }
-    
-    public void setDebugOutput(boolean enabled) {
-        this.debugOutput = enabled;
-        if (dutyAssigner != null) {
-            dutyAssigner.setDebugOutput(enabled);
-        }
     }
     
     /**
@@ -223,7 +215,6 @@ public class GenerateDutyCalendar {
      */
     public void assignDuties() {
         dutyAssigner = new DutyAssigner(calendar, teachers);
-        dutyAssigner.setDebugOutput(debugOutput);
         dutyAssigner.assignDuties();
     }
     

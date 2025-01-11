@@ -15,13 +15,13 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.Arrays;
 
 public class DutyAssigner {
     // Calendar and teacher references
     private final Calendar calendar;
     private final List<Teacher> teachers;
     //private final DutyScheduleTemplate[] termTemplates;
-    private boolean debugOutput = false;  // Flag to control console output
     
     // Random number generator for teacher selection
     private final Random random = new Random();
@@ -47,10 +47,6 @@ public class DutyAssigner {
         for (DayPattern pattern : DayPattern.values()) {
             dayGroups.put(pattern, new ArrayList<>());
         }
-    }
-    
-    public void setDebugOutput(boolean enabled) {
-        this.debugOutput = enabled;
     }
     
     
@@ -151,28 +147,18 @@ public class DutyAssigner {
             
             // begin assigning duties
             // check if the teacher needs more duties
-            for (int numberOfDutiesAssigned = 0; numberOfDutiesAssigned < teacher.getMaxDutiesPerSemester(); numberOfDutiesAssigned++) {
                 // iterate through the terms
-                for (int term = 0; term < 4; term++) {
+            for (int semester = 0; semester < 2; semester++) {
+                for (int numberOfDutiesAssigned = 0; numberOfDutiesAssigned < teacher.getMaxDutiesPerSemester(); numberOfDutiesAssigned++) {
                     // using classPeriods, check if the teacher has a class in this term 
-                    // also a teacher can have one class in each semester leading to a total of 2 yet still assigned dutiesin both terms
-                    // iterate through the classPeriods
-                    int count = 0;
-                    for (int i = 0; i < classPeriods.size(); i++) {
-                        String classPeriod = classPeriods.get(i);
-                        if (classPeriod.equals("")) {
-                            count++;
-                        } else {
-                            count = 0;
-                        }
-                        if (i > 5 && count == 5) { //TODO ajust this logic to id when teacher has no classes in semester 1/2
-                            System.out.println("Teacher " + teacher.getName() + " has no classes in term 1/2");
-                            continue;
-                        }
-
+                    
+                    // check if the first 5 classPeriods are empty or if the last 5 are empty
+                    if ((classPeriods.subList(0, 5).equals(Arrays.asList("", "", "", "", "")) && semester == 0) || (classPeriods.subList(5, 10).equals(Arrays.asList("", "", "", "", "")) && semester == 1)) {
+                        System.out.println("Teacher " + teacher.getName() + " has no classes in semester " + (semester+1));
+                        break; // skips to the next teacher
                     }
                     // iterate through the days
-                    for (Day day : termDaysForValues.get(term)) {
+                    for (Day day : termDaysForValues.get(semester)) {
                         // check if the duty is already assigned
                         for (Duty duty : day.getDuties()) {
 
