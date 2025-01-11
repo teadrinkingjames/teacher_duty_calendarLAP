@@ -5,25 +5,19 @@ import com.jamesdegroot.calendar.Calendar;
 import com.jamesdegroot.calendar.Day;
 import com.jamesdegroot.calendar.Duty;
 import com.jamesdegroot.GenerateDutyCalendar;
-import java.time.LocalDate;
-import java.time.Month;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Random;
 import java.util.stream.Collectors;
 import java.time.DayOfWeek;
 import java.util.Collections;
 import java.util.Map;
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.Arrays;
-import java.util.Collection;
 
 public class DutyAssigner {
     // Calendar and teacher references
     private final Calendar calendar;
     private final List<Teacher> teachers;
-    private final Random random = new Random();
     private Map<DayPattern, List<Day>> dayGroups;
     private List<Map<DayPattern, List<Day>>> termPatternGroups;
 
@@ -49,7 +43,20 @@ public class DutyAssigner {
     // ===== Main Public Methods =====
 
     /**
-     * Main method to assign duties for the entire semester
+     * Main method to assign duties for the entire school year.
+     * 
+     * Process Overview:
+     * 1. Get all school days (excluding holidays and weekends)
+     * 2. Group days by term and pattern (e.g., Monday Day 1, Monday Day 2)
+     * 3. For each teacher:
+     *    - Process one semester at a time
+     *    - First assign non-Hall duties (prioritized)
+     *    - Then assign Hall duties if needed to meet duty quota
+     *    - Ensure balanced distribution between terms
+     * 
+     * QoL Note: To modify duty priorities or assignment rules:
+     * - Check tryAssignDutyToTeacher() for duty type filtering
+     * - Adjust assignDutiesForTeacher() for semester/term balancing
      */
     public void assignDuties() {
         System.out.println("Starting duty assignment...\n");
@@ -66,7 +73,18 @@ public class DutyAssigner {
     }
 
     /**
-     * Prints the duty schedule for all terms
+     * Prints a formatted duty schedule for all terms.
+     * 
+     * Format:
+     * Term X Duty Schedule:
+     * ===============================
+     * Day      | Duty              | Day 1 Teachers        | Day 2 Teachers
+     * ------------------------------------------------------------------------
+     * MONDAY   | Cafeteria        | Smith, Jones         | Brown, Wilson
+     * 
+     * QoL Note: To modify the schedule format:
+     * - Adjust column widths in the printf statements
+     * - Modify separator lengths (currently 135 chars)
      */
     public void printDutySchedule() {
         // For each term
@@ -160,6 +178,21 @@ public class DutyAssigner {
 
     // ===== Core Duty Assignment Methods =====
 
+    /**
+     * Assigns duties to a single teacher across both semesters.
+     * 
+     * Process per semester:
+     * 1. Reset duty counts for new semester
+     * 2. Skip if teacher has no classes this semester
+     * 3. First pass: Try to assign non-Hall duties across both terms
+     * 4. Second pass: If needed, assign Hall duties to meet quota
+     * 
+     * QoL Note: 
+     * - Modify numberOfDutiesNeeded calculation to adjust workload
+     * - Adjust the order of term processing to change distribution
+     * 
+     * @param teacher The teacher to assign duties to
+     */
     private void assignDutiesForTeacher(Teacher teacher) {
         if (teacher.getMaxDutiesPerSemester() == 0) {
             System.out.println("Teacher " + teacher.getName() + " has no duties");
@@ -213,6 +246,25 @@ public class DutyAssigner {
         }
     }
 
+    /**
+     * Attempts to assign a duty to a teacher within a specific term.
+     * Returns true if a duty was assigned, false otherwise.
+     * 
+     * Process:
+     * 1. Iterate through each day in the term
+     * 2. For each day, check all duty slots
+     * 3. Try to assign each duty if it matches criteria
+     * 
+     * QoL Note:
+     * - Modify the order of timeSlot/pos iteration to prioritize certain periods
+     * 
+     * @param teacher The teacher to assign the duty to
+     * @param daysInTerm List of days in the current term
+     * @param term Current term number
+     * @param isHallDuty Whether to assign hall duties or non-hall duties
+     * @param numberOfDutiesNeeded Maximum duties for this teacher
+     * @return boolean indicating if a duty was assigned
+     */
     private boolean assignDutiesInTerm(Teacher teacher, List<Day> daysInTerm, int term, boolean isHallDuty, int numberOfDutiesNeeded) {
         for (Day day : daysInTerm) {
             if (teacher.getDutiesThisSemester() >= numberOfDutiesNeeded) return false;
@@ -229,6 +281,27 @@ public class DutyAssigner {
         return false;
     }
 
+    /**
+     * Attempts to assign a specific duty to a teacher.
+     * 
+     * Checks performed:
+     * 1. Duty exists and hasn't been assigned to this teacher
+     * 2. Duty type matches what we're trying to assign (Hall vs non-Hall)
+     * 3. No teacher already assigned for this day type
+     * 4. Assignment won't exceed teacher's semester limit
+     * 
+     * QoL Note:
+     * - Modify the isHall check to change what counts as a Hall duty
+     * - Adjust the logging format for better debugging
+     * 
+     * @param teacher The teacher to assign the duty to
+     * @param day The day containing the duty
+     * @param duty The specific duty to assign
+     * @param term Current term number
+     * @param isHallDuty Whether we're assigning hall duties
+     * @param numberOfDutiesNeeded Maximum duties for this teacher
+     * @return boolean indicating if the duty was assigned
+     */
     private boolean tryAssignDutyToTeacher(Teacher teacher, Day day, Duty duty, int term, boolean isHallDuty, int numberOfDutiesNeeded) {
         if (duty == null || teacher.hasDutyAssigned(duty)) return false;
         
@@ -268,6 +341,17 @@ public class DutyAssigner {
 
     // ===== Pattern and Term Management Methods =====
 
+    /**
+     * Initializes the term pattern groups data structure.
+     * Groups school days by term and pattern for efficient access.
+     * 
+     * Structure:
+     * termPatternGroups[term][pattern] = List of days matching that pattern
+     * 
+     * QoL Note:
+     * - Modify the grouping logic here to change how days are organized
+     * - Add additional filtering criteria if needed
+     */
     private void initializeTermPatternGroups(List<Day> schoolDays) {
         termPatternGroups = new ArrayList<>();
         for (int term = 0; term < 4; term++) {
@@ -279,6 +363,16 @@ public class DutyAssigner {
         }
     }
 
+    /**
+     * Gets a list of days for each term in a semester.
+     * 
+     * Structure:
+     * - Index 0: First term of semester
+     * - Index 1: Second term of semester
+     * 
+     * QoL Note:
+     * - Modify to change how terms are grouped or ordered
+     */
     private List<List<Day>> getTermDaysForSemester(int semester) {
         List<List<Day>> termDays = new ArrayList<>();
         for (int term = semester * 2; term < (semester * 2 + 2); term++) {
@@ -300,6 +394,14 @@ public class DutyAssigner {
 
     // ===== Utility Methods =====
 
+    /**
+     * Gets all school days from the calendar.
+     * Filters out weekends and holidays.
+     * 
+     * QoL Note:
+     * - Add additional filtering here if needed
+     * - Modify to change what counts as a school day
+     */
     private List<Day> getSchoolDays() {
         return calendar.getDaysOfYear().stream()
             .filter(Day::isSchoolDay)
@@ -314,6 +416,13 @@ public class DutyAssigner {
         }
     }
 
+    /**
+     * Maps a day of the week and Day1/Day2 status to a DayPattern.
+     * Used for consistent pattern matching across the system.
+     * 
+     * QoL Note:
+     * - Add new patterns here if schedule structure changes
+     */
     private DayPattern getDayPattern(DayOfWeek dayOfWeek, boolean isDay1) {
         return switch (dayOfWeek) {
             case MONDAY -> isDay1 ? DayPattern.MONDAY_DAY1 : DayPattern.MONDAY_DAY2;
@@ -325,6 +434,14 @@ public class DutyAssigner {
         };
     }
 
+    /**
+     * Prints pattern counts for debugging and verification.
+     * Shows how many instances of each pattern exist in each term.
+     * 
+     * QoL Note:
+     * - Modify output format for different debugging needs
+     * - Add additional statistics as needed
+     */
     private void printPatternCounts() {
         for (int term = 0; term < 4; term++) {
             System.out.println("\nTerm " + term + " pattern counts:");
