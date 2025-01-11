@@ -2,6 +2,8 @@ package com.jamesdegroot.calendar;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents a day in the calendar.
@@ -49,6 +51,22 @@ public class Day {
             return dutySchedule[timeSlot];
         }
         return new Duty[DUTIES_PER_SLOT];
+    }
+
+    /**
+     * Gets all duties for this day across all time slots
+     * @return List of all duties
+     */
+    public List<Duty> getDuties() {
+        List<Duty> allDuties = new ArrayList<>();
+        for (Duty[] timeSlot : dutySchedule) {
+            for (Duty duty : timeSlot) {
+                if (duty != null) {
+                    allDuties.add(duty);
+                }
+            }
+        }
+        return allDuties;
     }
 
     /**

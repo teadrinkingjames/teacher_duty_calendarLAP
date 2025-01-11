@@ -139,11 +139,13 @@ public class DutyAssigner {
             }
             System.out.println("Teacher: " + teacher.getName());
             // check if the teacher should be assigned a duty
-            
             // get the schedule of the teacher
             List<String> schedule = teacher.getSchedule();
             // iterate through the schedule
+            List<String> classPeriods = new ArrayList<>();
             for (String classPeriod : schedule) {
+                // Store this in a list of strings
+                classPeriods.add(classPeriod);
                 System.out.println("Class Period: " + classPeriod);
             }
             
@@ -152,14 +154,29 @@ public class DutyAssigner {
             for (int numberOfDutiesAssigned = 0; numberOfDutiesAssigned < teacher.getMaxDutiesPerSemester(); numberOfDutiesAssigned++) {
                 // iterate through the terms
                 for (int term = 0; term < 4; term++) {
-                    //if the teacher has no duties in this term, skip to the next term
-                    if (!teacher.hasClassInSemester(term)) {
-                        System.out.println("Teacher " + teacher.getName() + " has no classes in term " + term);
-                        continue;
+                    // using classPeriods, check if the teacher has a class in this term 
+                    // also a teacher can have one class in each semester leading to a total of 2 yet still assigned dutiesin both terms
+                    // iterate through the classPeriods
+                    int count = 0;
+                    for (int i = 0; i < classPeriods.size(); i++) {
+                        String classPeriod = classPeriods.get(i);
+                        if (classPeriod.equals("")) {
+                            count++;
+                        } else {
+                            count = 0;
+                        }
+                        if (i > 5 && count == 5) { //TODO ajust this logic to id when teacher has no classes in semester 1/2
+                            System.out.println("Teacher " + teacher.getName() + " has no classes in term 1/2");
+                            continue;
+                        }
+
                     }
                     // iterate through the days
                     for (Day day : termDaysForValues.get(term)) {
                         // check if the duty is already assigned
+                        for (Duty duty : day.getDuties()) {
+
+                        }
                     }
                 }
             }
