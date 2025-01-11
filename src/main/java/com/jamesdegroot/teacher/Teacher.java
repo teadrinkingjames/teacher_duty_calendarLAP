@@ -2,6 +2,8 @@ package com.jamesdegroot.teacher;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Set;
+import java.util.HashSet;
 import com.jamesdegroot.calendar.Duty;
 
 public class Teacher {
@@ -59,7 +61,8 @@ public class Teacher {
     private int[] dutiesPerTerm = new int[4];  // One counter for each term
     private int dutiesThisSemester = 0; // counter for duties assigned this semester
     private int maxDutiesPerSemester;   // maximum number of duties per semester
-
+    private Set<Duty> assignedDuties;  // Track which duties are assigned
+    
     /**
      * Creates a new Teacher with the given name and initializes their schedule.
      * @param name The full name of the teacher
@@ -69,6 +72,7 @@ public class Teacher {
         this.schedule = new ArrayList<>();
         this.classScheduleStatus = TeacherScheduleStatusEnum.NO_LOAD;
         this.jobType = TeacherTypeEnum.REGULAR;
+        this.assignedDuties = new HashSet<>();
         
         // Initialize all periods as empty
         for (int periodIndex = 0; periodIndex < TOTAL_PERIODS; periodIndex++) {
@@ -383,6 +387,7 @@ public class Teacher {
      * @param patternCount number of times this type of day occurs
      */
     public void assignDuty(Duty duty, int patternCount) {
+        assignedDuties.add(duty);
         dutiesThisSemester += patternCount;
     }
 
@@ -392,6 +397,11 @@ public class Teacher {
      * @return true if teacher has this duty
      */
     public boolean hasDutyAssigned(Duty duty) {
-        return duty.getDay1Teachers().contains(name) || duty.getDay2Teachers().contains(name);
+        return assignedDuties.contains(duty);
+    }
+
+    public void resetDutiesForNewSemester() {
+        dutiesThisSemester = 0;
+        assignedDuties.clear();
     }
 }
