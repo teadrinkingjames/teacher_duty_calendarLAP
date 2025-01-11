@@ -177,8 +177,17 @@ public class DutyAssigner {
                             Collectors.counting()
                         ));
                     
-                    for (Map.Entry<DayPattern, Long> entry : patternCounts.entrySet()) {
-                        System.out.println("Pattern " + entry.getKey() + " occurs " + entry.getValue() + " times in term " + term);
+                    // Print patterns in order by weekday
+                    System.out.println("Term " + term + " pattern counts:");
+                    for (DayOfWeek day : DayOfWeek.values()) {
+                        if (day != DayOfWeek.SATURDAY && day != DayOfWeek.SUNDAY) {
+                            DayPattern day1Pattern = getDayPattern(day, true);
+                            DayPattern day2Pattern = getDayPattern(day, false);
+                            System.out.printf("%s Day1: %d, Day2: %d%n", 
+                                day.toString(), 
+                                patternCounts.getOrDefault(day1Pattern, 0L),
+                                patternCounts.getOrDefault(day2Pattern, 0L));
+                        }
                     }
                 }
             }
