@@ -10,12 +10,14 @@ import java.time.Month;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.stream.Collectors;
 import java.time.DayOfWeek;
 import java.util.Collections;
 import java.util.Map;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Arrays;
+import java.util.Collection;
 
 public class DutyAssigner {
     // Calendar and teacher references
@@ -136,10 +138,10 @@ public class DutyAssigner {
             System.out.println("Teacher: " + teacher.getName());
             // check if the teacher should be assigned a duty
             // get the schedule of the teacher
-            List<String> schedule = teacher.getSchedule();
+            List<String> classSchedule = teacher.getSchedule();
             // iterate through the schedule
             List<String> classPeriods = new ArrayList<>();
-            for (String classPeriod : schedule) {
+            for (String classPeriod : classSchedule) {
                 // Store this in a list of strings
                 classPeriods.add(classPeriod);
                 System.out.println("Class Period: " + classPeriod);
@@ -147,22 +149,36 @@ public class DutyAssigner {
             
             // begin assigning duties
             // check if the teacher needs more duties
-                // iterate through the terms
+            // iterate through the semesters
             for (int semester = 0; semester < 2; semester++) {
-                for (int numberOfDutiesAssigned = 0; numberOfDutiesAssigned < teacher.getMaxDutiesPerSemester(); numberOfDutiesAssigned++) {
-                    // using classPeriods, check if the teacher has a class in this term 
+                // check if the teacher has no classes in this semester
+                if ((classPeriods.subList(0, 5).equals(Arrays.asList("", "", "", "", "")) && semester == 0) || 
+                    (classPeriods.subList(5, 10).equals(Arrays.asList("", "", "", "", "")) && semester == 1)) {
+                    System.out.println("Teacher " + teacher.getName() + " has no classes in semester " + (semester+1));
+                    continue; // skips to the next semester
+                }
+                
+                System.out.println("Teacher " + teacher.getName() + " has classes in semester " + (semester+1));
+                int numberOfDutiesNeeded = teacher.getMaxDutiesPerSemester();
+                
+                // Iterate through the terms in this semester
+                for (int term = semester * 2; term < (semester * 2 + 2); term++) {
+                    System.out.println("Processing term " + term);
                     
-                    // check if the first 5 classPeriods are empty or if the last 5 are empty
-                    if ((classPeriods.subList(0, 5).equals(Arrays.asList("", "", "", "", "")) && semester == 0) || (classPeriods.subList(5, 10).equals(Arrays.asList("", "", "", "", "")) && semester == 1)) {
-                        System.out.println("Teacher " + teacher.getName() + " has no classes in semester " + (semester+1));
-                        break; // skips to the next teacher
-                    }
-                    // iterate through the days
-                    for (Day day : termDaysForValues.get(semester)) {
-                        // check if the duty is already assigned
-                        for (Duty duty : day.getDuties()) {
-
-                        }
+                    //get the values of the types of days in the term
+                    List<Day> days = termPatternGroups.get(term).values().stream()
+                        .flatMap(Collection::stream)
+                        .collect(Collectors.toList());
+                    
+                    // Count and print occurrences of each day pattern
+                    Map<DayPattern, Long> patternCounts = days.stream()
+                        .collect(Collectors.groupingBy(
+                            day -> getDayPattern(day.getDate().getDayOfWeek(), day.isDay1()),
+                            Collectors.counting()
+                        ));
+                    
+                    for (Map.Entry<DayPattern, Long> entry : patternCounts.entrySet()) {
+                        System.out.println("Pattern " + entry.getKey() + " occurs " + entry.getValue() + " times in term " + term);
                     }
                 }
             }
