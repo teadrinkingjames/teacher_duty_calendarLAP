@@ -314,6 +314,10 @@ public class DutyAssigner {
             return false;
         }
 
+        // Skip if teacher cannot do this duty
+        int timeSlot = DutyAssignmentRules.getTimeSlot(duty.getTimeSlot());
+        if (!DutyAssignmentRules.canAssignDuty(teacher, timeSlot)) return false;
+
         DayPattern pattern = getDayPattern(day.getDate().getDayOfWeek(), day.isDay1());
         int patternCount = termPatternGroups.get(term).get(pattern).size();
 

@@ -7,6 +7,8 @@ import java.util.List;
 import java.time.Month;
 import com.jamesdegroot.calendar.Day;
 import com.jamesdegroot.calendar.Duty;
+import java.util.Map;
+import java.util.HashMap;
 
 public class DutyAssignmentRules {
     // Constants for duty limits
@@ -40,6 +42,21 @@ public class DutyAssignmentRules {
         8,  // Period 9 -> Schedule index 8
         9   // Period 10 -> Schedule index 9
     };
+    
+    // Map duty time slots to schedule indices
+    private static final Map<String, Integer> TIME_SLOT_MAP = new HashMap<>() {{
+        put("Slot 1", 0);  // Period 1
+        put("Slot 2", 1);  // Period 2
+        put("Slot 3", 2);  // Lunch A
+        put("Slot 4", 2);  // Lunch A
+        put("Slot 5", 3);  // Lunch B
+        put("Slot 6", 3);  // Lunch B
+        put("Slot 7", 4);  // Period 4
+        put("Slot 8", 4);  // Period 4
+        put("Slot 9", 5);  // Period 5
+        put("Slot 10", 5); // Period 5
+        put("Slot 11", 6); // After school
+    }};
     
     /**
      * Determines if it's a Day 1 or Day 2 based on the date
@@ -96,47 +113,15 @@ public class DutyAssignmentRules {
      * @param daysInWeek The list of days in the week
      * @return true if the teacher can be assigned the duty
      */
-    public static boolean canAssignDuty(Teacher teacher, int timeSlot, Day day, boolean isDay1Duty, List<Day> daysInWeek) {
-        // Skip non-school days
-        if (!day.isSchoolDay()) {
-            return false;
-        }
+    public static boolean canAssignDuty(Teacher teacher, int timeSlot) {
         
+        if (timeSlot == -1){ System.out.println("ERROR: Invalid time slot " + timeSlot); return false; }
         // Check if teacher has classes during the duty time slot
-        if (hasClassDuringTimeSlot(teacher, timeSlot)) {
-            if (day.getDate().getMonthValue() == 1) { // Only debug January dates
-                System.out.printf("Teacher %s has class during time slot %d%n", 
-                    teacher.getName(), timeSlot + 1);
-            }
-            return false;
-        }
+        if (hasClassDuringTimeSlot(teacher, timeSlot)) return false;
         
-        // Check if teacher has any classes in this term
-        if (!hasClassesInTerm(teacher, day.getDate())) {
-            if (day.getDate().getMonthValue() == 1) { // Only debug January dates
-                System.out.printf("Teacher %s has no classes in term for date %s%n", 
-                    teacher.getName(), day.getDate());
-            }
-            return false;
-        }
-
         // Check adjacent period rules
-        if (!canDoAdjacentPeriodDuty(teacher, timeSlot)) {
-            if (day.getDate().getMonthValue() == 1) { // Only debug January dates
-                System.out.printf("Teacher %s cannot do adjacent period duty for time slot %d%n", 
-                    teacher.getName(), timeSlot + 1);
-            }
-            return false;
-        }
+        if (!canDoAdjacentPeriodDuty(teacher, timeSlot)) return false;
         
-        // Check weekly duty limit
-        if (exceedsWeeklyDutyLimit(teacher, day.getDate(), daysInWeek)) {
-            if (day.getDate().getMonthValue() == 1) { // Only debug January dates
-                System.out.printf("Teacher %s exceeds weekly duty limit for date %s%n", 
-                    teacher.getName(), day.getDate());
-            }
-            return false;
-        }
         
         return true;
     }
@@ -225,18 +210,16 @@ public class DutyAssignmentRules {
     }
     
     /**
-     * Maps a time period to its corresponding duty slot
+     * Converts a duty time slot string to a schedule index
+     * @param timeSlot The time slot string from the duty
+     * @return The corresponding schedule index, or -1 if invalid
      */
-    public static int getTimeSlot(String period) {
-        switch (period.toUpperCase()) {
-            case "PERIOD 1": return PERIOD_1_SLOT;
-            case "PERIOD 2": return PERIOD_2_SLOT;
-            case "LUNCH A": return LUNCH_A_SLOT;
-            case "LUNCH B": return LUNCH_B_SLOT;
-            case "PERIOD 3": return PERIOD_3_SLOT;
-            case "PERIOD 4": return PERIOD_4_SLOT;
-            default: return -1;
+    public static int getTimeSlot(String timeSlot) {
+        if (timeSlot == null) {
+            System.out.println("ERROR: Null time slot");
+            return -1;
         }
+        return TIME_SLOT_MAP.getOrDefault(timeSlot, -1);
     }
     
     /**

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Set;
 import java.util.HashSet;
 import com.jamesdegroot.calendar.Duty;
+import com.jamesdegroot.duty_assigment.DutyAssignmentRules;
 
 public class Teacher {
     // Schedule constants
@@ -403,5 +404,20 @@ public class Teacher {
     public void resetDutiesForNewSemester() {
         dutiesThisSemester = 0;
         assignedDuties.clear();
+    }
+
+    /**
+     * Checks if a teacher can perform a specific duty based on their schedule.
+     * @param duty The duty to check
+     * @return true if the teacher can perform the duty, false otherwise
+     */
+    public boolean canDoDuty(Duty duty) {
+        // Get the time slot index from the duty's time slot string
+        int timeSlot = DutyAssignmentRules.getTimeSlot(duty.getTimeSlot());
+        if (timeSlot == -1) return false; // Invalid time slot
+        
+        // Check if teacher has a class during this time slot
+        String classAtTime = schedule.get(timeSlot);
+        return classAtTime == "" || classAtTime.trim().isEmpty();
     }
 }
