@@ -65,7 +65,11 @@ public class DutyAssigner {
         initializeTermPatternGroups(schoolDays);
         printPatternCounts();
         
-        for (Teacher teacher : teachers) {
+        // Create a copy of the teachers list and shuffle it
+        List<Teacher> shuffledTeachers = new ArrayList<>(teachers);
+        Collections.shuffle(shuffledTeachers);
+        
+        for (Teacher teacher : shuffledTeachers) {
             assignDutiesForTeacher(teacher);
         }
         
