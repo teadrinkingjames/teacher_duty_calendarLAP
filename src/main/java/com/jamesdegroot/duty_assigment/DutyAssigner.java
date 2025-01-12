@@ -312,6 +312,24 @@ public class DutyAssigner {
         boolean isHall = duty.getName().contains("Hall");
         if ((isHallDuty && !isHall) || (!isHallDuty && isHall)) return false;
 
+        // If this is a hall duty, check if there are any unfilled non-hall duties in the same time slot
+        if (isHall) {
+            Duty[][] dutySchedule = day.getDutySchedule();
+            int currentTimeSlot = DutyAssignmentRules.getTimeSlot(duty.getTimeSlot());
+            
+            // Check all duties in the same time slot
+            for (Duty otherDuty : dutySchedule[currentTimeSlot]) {
+                if (otherDuty != null && !otherDuty.getName().contains("Hall")) {
+                    // If there's an unfilled non-hall duty, don't assign this hall duty
+                    boolean hasDay1Teacher = !otherDuty.getDay1Teachers().isEmpty();
+                    boolean hasDay2Teacher = !otherDuty.getDay2Teachers().isEmpty();
+                    if ((day.isDay1() && !hasDay1Teacher) || (!day.isDay1() && !hasDay2Teacher)) {
+                        return false;
+                    }
+                }
+            }
+        }
+
         // Skip if duty already has a teacher assigned for this day type
         if ((day.isDay1() && !duty.getDay1Teachers().isEmpty()) ||
             (!day.isDay1() && !duty.getDay2Teachers().isEmpty())) {

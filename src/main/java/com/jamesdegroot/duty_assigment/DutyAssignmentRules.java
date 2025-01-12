@@ -59,40 +59,15 @@ public class DutyAssignmentRules {
     }};
     
     /**
-     * Determines if it's a Day 1 or Day 2 based on the date
+     * Determines if it's a Day 1 or Day 2 based on the slot number
      * @param date The date to check
-     * @return true if it's Day 1, false if Day 2
+     * @return true if it's Day 1 (odd slot), false if Day 2 (even slot)
      */
     public static boolean isDay1(LocalDate date) {
-        // Calculate the number of school days since the start of the term
-        Month month = date.getMonth();
-        LocalDate termStart;
-        
-        if (month.getValue() >= Month.SEPTEMBER.getValue() && month.getValue() <= Month.JANUARY.getValue()) {
-            // Fall semester
-            if (month.getValue() < Month.NOVEMBER.getValue()) {
-                // Term 1
-                termStart = LocalDate.of(date.getYear(), Month.SEPTEMBER, 1);
-            } else {
-                // Term 2
-                termStart = LocalDate.of(date.getYear(), Month.NOVEMBER, 1);
-            }
-        } else {
-            // Spring semester
-            if (month.getValue() < Month.APRIL.getValue()) {
-                // Term 3
-                termStart = LocalDate.of(date.getYear(), Month.FEBRUARY, 1);
-            } else {
-                // Term 4
-                termStart = LocalDate.of(date.getYear(), Month.APRIL, 1);
-            }
-        }
-        
-        // Calculate days since term start
-        long daysSinceTermStart = date.toEpochDay() - termStart.toEpochDay();
-        
-        // Every other school day should be Day 1
-        return daysSinceTermStart % 2 == 0;
+        // Extract slot number from date
+        int slotNumber = date.getDayOfMonth();
+        // Odd slots are Day 1, even slots are Day 2
+        return slotNumber % 2 == 1;
     }
     
     /**
@@ -138,21 +113,21 @@ public class DutyAssignmentRules {
 
         // For Lunch A duties (can't have class in Period 2)
         if (timeSlot == LUNCH_A_SLOT) {
-            return schedule.get(PERIOD_2_SLOT).trim().isEmpty();
+            return schedule.get(PERIOD_2_SLOT).trim().equals("");
         }
         
         // For Lunch B duties (can't have class in Period 3)
         if (timeSlot == LUNCH_B_SLOT) {
-            return schedule.get(PERIOD_3_SLOT).trim().isEmpty();
+            return schedule.get(PERIOD_3_SLOT).trim().equals("");
         }
 
         // For other periods, check the period before
-        if (scheduleIndex > 0 && !schedule.get(scheduleIndex - 1).trim().isEmpty()) {
+        if (scheduleIndex > 0 && !schedule.get(scheduleIndex - 1).trim().equals("")) {
             return false;
         }
 
         // For other periods, check the period after
-        if (scheduleIndex < schedule.size() - 1 && !schedule.get(scheduleIndex + 1).trim().isEmpty()) {
+        if (scheduleIndex < schedule.size() - 1 && !schedule.get(scheduleIndex + 1).trim().equals("")) {
             return false;
         }
 
