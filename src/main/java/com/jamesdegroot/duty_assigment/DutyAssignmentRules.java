@@ -109,7 +109,6 @@ public class DutyAssignmentRules {
      */
     private static boolean canDoAdjacentPeriodDuty(Teacher teacher, int timeSlot) {
         List<String> schedule = teacher.getSchedule();
-        int scheduleIndex = PERIOD_TO_SCHEDULE_MAP[timeSlot];
 
         // For Lunch A duties (can't have class in Period 2)
         if (timeSlot == LUNCH_A_SLOT) {
@@ -119,16 +118,6 @@ public class DutyAssignmentRules {
         // For Lunch B duties (can't have class in Period 3)
         if (timeSlot == LUNCH_B_SLOT) {
             return schedule.get(PERIOD_3_SLOT).trim().equals("");
-        }
-
-        // For other periods, check the period before
-        if (scheduleIndex > 0 && !schedule.get(scheduleIndex - 1).trim().equals("")) {
-            return false;
-        }
-
-        // For other periods, check the period after
-        if (scheduleIndex < schedule.size() - 1 && !schedule.get(scheduleIndex + 1).trim().equals("")) {
-            return false;
         }
 
         return true;

@@ -65,15 +65,29 @@ public class DutyAssigner {
         initializeTermPatternGroups(schoolDays);
         printPatternCounts();
         
-        // Create a copy of the teachers list and shuffle it
-        List<Teacher> shuffledTeachers = new ArrayList<>(teachers);
-        Collections.shuffle(shuffledTeachers);
+        // Create a copy of the teachers list
+        List<Teacher> availableTeachers = new ArrayList<>(teachers);
         
-        for (Teacher teacher : shuffledTeachers) {
-            assignDutiesForTeacher(teacher);
+        // Make three passes over the teacher list
+        for (int pass = 1; pass <= 3; pass++) {
+            System.out.println("\nStarting Pass " + pass + " of duty assignment...");
+            
+            // Sort teachers by how far they are from their maximum duties
+            Collections.sort(availableTeachers, (t1, t2) -> {
+                int t1Remaining = t1.getMaxDutiesPerSemester() - t1.getDutiesThisSemester();
+                int t2Remaining = t2.getMaxDutiesPerSemester() - t2.getDutiesThisSemester();
+                return Integer.compare(t2Remaining, t1Remaining); // Most remaining duties first
+            });
+            
+            // Try to assign duties to each teacher
+            for (Teacher teacher : availableTeachers) {
+                if (teacher.getDutiesThisSemester() < teacher.getMaxDutiesPerSemester()) {
+                    assignDutiesForTeacher(teacher);
+                }
+            }
         }
         
-        System.out.println("Duty assignment completed!");
+        System.out.println("\nDuty assignment completed!");
     }
 
     /**
@@ -481,6 +495,30 @@ public class DutyAssigner {
                         termPatternGroups.get(term).getOrDefault(day2Pattern, Collections.emptyList()).size());
                 }
             }
+        }
+    }
+
+    /**
+     * Prints a summary of teachers who haven't reached their maximum duties
+     */
+    private void printTeacherDutyCounts() {
+        List<Teacher> teachersUnderMax = teachers.stream()
+            .filter(t -> t.getDutiesThisSemester() < t.getMaxDutiesPerSemester())
+            .collect(Collectors.toList());
+            
+        if (!teachersUnderMax.isEmpty()) {
+            System.out.println("\nTeachers Under Maximum Duties:");
+            System.out.println("=".repeat(50));
+            System.out.printf("%-30s | %s/%s%n", "Teacher Name", "Current", "Max");
+            System.out.println("-".repeat(50));
+            
+            for (Teacher teacher : teachersUnderMax) {
+                System.out.printf("%-30s | %d/%d%n", 
+                    teacher.getName(),
+                    teacher.getDutiesThisSemester(),
+                    teacher.getMaxDutiesPerSemester());
+            }
+            System.out.println("=".repeat(50));
         }
     }
 } 

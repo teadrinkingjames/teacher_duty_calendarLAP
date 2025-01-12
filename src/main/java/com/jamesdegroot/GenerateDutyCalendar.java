@@ -4,6 +4,7 @@ import java.io.File;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.jamesdegroot.calendar.Calendar;
 import com.jamesdegroot.calendar.Day;
@@ -217,6 +218,7 @@ public class GenerateDutyCalendar {
         dutyAssigner = new DutyAssigner(calendar, teachers);
         dutyAssigner.assignDuties();
         dutyAssigner.printDutySchedule();
+        printTeacherDutyCounts();
     }
     
     /**
@@ -283,6 +285,30 @@ public class GenerateDutyCalendar {
                     System.out.println("-".repeat(NUM_OF_SEPERATORS_CHAR));
                 }
             }
+        }
+    }
+    
+    /**
+     * Prints a summary of teachers who haven't reached their maximum duties
+     */
+    private void printTeacherDutyCounts() {
+        List<Teacher> teachersUnderMax = teachers.stream()
+            .filter(t -> t.getDutiesThisSemester() < t.getMaxDutiesPerSemester())
+            .collect(Collectors.toList());
+            
+        if (!teachersUnderMax.isEmpty()) {
+            System.out.println("\nTeachers Under Maximum Duties:");
+            System.out.println("=".repeat(50));
+            System.out.printf("%-30s | %s/%s%n", "Teacher Name", "Current", "Max");
+            System.out.println("-".repeat(50));
+            
+            for (Teacher teacher : teachersUnderMax) {
+                System.out.printf("%-30s | %d/%d%n", 
+                    teacher.getName(),
+                    teacher.getDutiesThisSemester(),
+                    teacher.getMaxDutiesPerSemester());
+            }
+            System.out.println("=".repeat(50));
         }
     }
 }
