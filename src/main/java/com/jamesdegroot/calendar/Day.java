@@ -6,8 +6,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Represents a day in the calendar.
- */
+ * Day.java
+ * Name: James de Groot
+ * Date: January 13, 2025
+ *
+ * 	Purpose: 
+ *    Day class, used to store the day and the duties that are assigned to the day
+ *      
+ *  Methods:
+ * 	  - addDuty, void, adds a duty to the day
+ *    - getDuties, Duty[], gets the duties for a specific time slot
+ *    - getDuties, List<Duty>, gets all duties for the day
+ *    - getDutySchedule, Duty[][], gets the entire duty schedule
+ *    - getDate, LocalDate, gets the date of the day
+ *    - setSchoolDay, void, sets the school day status of the day
+ *    - setHoliday, void, sets the holiday status of the day
+ *    - isSchoolDay, boolean, checks if the day is a school day
+ *    - isHoliday, boolean, checks if the day is a holiday
+ *    - isDay1, boolean, checks if the day is a Day 1 in the schedule rotation
+ *    - getTermNumber, int, gets the term number for the day
+ *    - toString, String, returns a string representation of the day
+*/
+
 public class Day {
     public static final int TIME_SLOTS = 11;  // Number of duty time slots (maybe 11)
     public static final int DUTIES_PER_SLOT = 1;  // Number of duties per time slot - easily changeable

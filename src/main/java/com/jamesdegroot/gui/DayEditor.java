@@ -9,6 +9,24 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+/**
+ * DayEditor.java
+ * Name: James de Groot
+ * Date: January 13, 2025
+ *
+ * 	Purpose: 
+ *    DayEditor class, used to create the day editor dialog
+ *      
+ *  Methods:
+ * 	  - DayEditor, constructor, creates a new DayEditor object
+ *    - updateDay, void, updates the day object
+ *    - styleButton, void, styles the button
+ *    - updateForm, void, updates the form with the current day object
+ *    - createRow, JPanel, creates a new row for the form
+ *    - createLabeledField, JPanel, creates a new labeled field for the form
+ * 
+*/
+
 public class DayEditor extends JDialog {
     // Window constants
     private static final String WINDOW_TITLE = "Day Schedule Editor";

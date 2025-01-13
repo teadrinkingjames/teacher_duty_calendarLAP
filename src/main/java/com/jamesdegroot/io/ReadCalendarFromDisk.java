@@ -10,6 +10,20 @@ import java.time.format.DateTimeFormatter;
 import com.jamesdegroot.calendar.Calendar;
 import com.jamesdegroot.calendar.Holiday;
 
+/**
+ * ReadCalendarFromDisk.java
+ * Name: James de Groot
+ * Date: January 13, 2025
+ *
+ * 	Purpose: 
+ *    ReadCalendarFromDisk class, used to read the calendar from an ICS file
+ *      
+ *  Methods:
+ * 	  - loadCalendarFromICS, void, loads the calendar from an ICS file
+ *    - parseDate, LocalDate, parses a date string from ICS format to LocalDate
+ * 
+*/
+
 public class ReadCalendarFromDisk {
     // ICS file event markers
     private static final String EVENT_START = "BEGIN:VEVENT";

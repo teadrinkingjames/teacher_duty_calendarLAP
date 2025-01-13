@@ -32,9 +32,28 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 
 /**
- * This class contains the main window for the application.
+ * AppWindow.java
+ * Name: James de Groot
+ * Date: January 13, 2025
+ *
+ * 	Purpose: 
+ *    AppWindow class, used to create the main window for the application
+ *      
+ *  Methods:
+ * 	  - AppWindow, constructor, creates a new AppWindow object
+ *    - initialize, void, initializes the main window
+ *    - redirectSystemOut, void, redirects the system output to the console output
+ *    - show, void, shows the main window
+ *    - addInputField, void, adds the input field to the main window
+ *    - showHelpDialog, void, shows the help dialog
+ *    - showTeacherEditor, void, shows the teacher profile editor dialog
+ *    - showDayEditor, void, shows the day editor dialog
+ *    - assignDuties, void, handles the duty assignment process
+ *    - styleButton, void, styles the button
+ *    - CustomOutputStream, class, custom output stream for redirecting system output to the console output
  * 
- */
+*/
+
 public class AppWindow {
     // Window dimensions and positioning
     private static final int WINDOW_WIDTH = 1025;

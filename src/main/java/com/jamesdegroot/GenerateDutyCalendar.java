@@ -18,8 +18,24 @@ import com.jamesdegroot.teacher.TeacherScheduleStatusEnum;
 import com.jamesdegroot.teacher.TeacherTypeEnum;
 
 /**
- * Generates a duty calendar for a school year.
- */
+ * GenerateDutyCalendar.java
+ * Name: James de Groot
+ * Date: January 13, 2025
+ *
+ * 	Purpose: 
+ *    GenerateDutyCalendar class, used to generate a duty calendar for a school year
+ *      
+ *  Methods:
+ * 	  - processFile, void, processes a teacher schedule file and updates the teacher list
+ *    - loadCalendar, void, loads and processes an ICS calendar file
+ *    - printSummary, void, prints a summary of the teacher schedule statuses
+ *    - getTeachers, List<Teacher>, gets the list of teachers
+ *    - isSchoolDay, boolean, checks if a given date is a school day
+ *    - printSchedule, void, prints the complete duty schedule
+ *    - printTeacherDutyCounts, void, prints a summary of teachers who haven't reached their maximum duties
+ * 
+*/
+
 public class GenerateDutyCalendar {
     public static final int NUM_OF_SEPERATORS_CHAR = 135; // maximum number of duties per semester
     @SuppressWarnings("unused")

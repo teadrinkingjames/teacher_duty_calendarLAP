@@ -6,6 +6,22 @@ import java.time.DayOfWeek;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * DutyScheduleTemplate.java
+ * Name: James de Groot
+ * Date: January 13, 2025
+ *
+ * 	Purpose: 
+ *    DutyScheduleTemplate class, used to store the duty schedule template for a term
+ *      
+ *  Methods:
+ * 	  - DutyScheduleTemplate, constructor, creates a duty schedule template object with the given term number
+ *    - getDayTemplate, Day[], gets the day template for a specific day of the week
+ *    - setDayTemplate, void, sets the day template for a specific day of the week
+ *    - getTermNumber, int, gets the term number for the duty schedule template
+ *    - applyTemplate, void, applies the duty schedule template to a target day
+*/
+
 public class DutyScheduleTemplate {
     // Constants for terms
     public static final int TERM_1 = 0;  // Fall Term 1 //TODO: this is a weird way of doing this

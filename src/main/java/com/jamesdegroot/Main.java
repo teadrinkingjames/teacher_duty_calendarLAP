@@ -4,8 +4,18 @@ import com.jamesdegroot.gui.AppWindow;
 import com.jamesdegroot.duty_assigment.DutyAssigner;
 
 /**
- * Main entry point for the Teacher Duty Calendar application.
- */
+ * Main.java
+ * Name: James de Groot
+ * Date: January 13, 2025
+ *
+ * 	Purpose: 
+ *    Main class, used to start the application
+ *      
+ *  Methods:
+ * 	  - main, void, starts the application
+ * 
+*/
+
 public class Main {
     /**
      * Initializes and starts the application.

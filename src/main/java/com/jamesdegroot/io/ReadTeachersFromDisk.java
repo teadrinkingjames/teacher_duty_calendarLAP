@@ -8,6 +8,19 @@ import java.util.List;
 
 import com.jamesdegroot.teacher.Teacher;
 
+/**
+ * ReadTeachersFromDisk.java
+ * Name: James de Groot
+ * Date: January 13, 2025
+ *
+ * 	Purpose: 
+ *    ReadTeachersFromDisk class, used to read the teachers from a CSV file 
+ *      
+ *  Methods:
+ * 	  - readTeachersNames, List<Teacher>, reads the teachers from a CSV file and creates Teacher objects
+ * 
+*/
+
 public class ReadTeachersFromDisk {
     
     /**

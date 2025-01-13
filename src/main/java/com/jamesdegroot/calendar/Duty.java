@@ -3,10 +3,27 @@ package com.jamesdegroot.calendar;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Duty.java
+ * Name: James de Groot
+ * Date: January 13, 2025
+ *
+ * 	Purpose: 
+ *    Duty class, used to store the duty and the teachers that are assigned to the duty and the location of the duty
+ *      
+ *  Methods:
+ * 	  - Duty, constructor, creates a duty object with the given name, description, room, and time slot
+ *    - getName, String, gets the name of the duty
+ *    - getDescription, String, gets the description of the duty
+ *    - getDay1Teachers, List<String>, gets the teachers assigned to the duty for Day 1
+ *    - getDay2Teachers, List<String>, gets the teachers assigned to the duty for Day 2
+ *    - getTeacher, String, gets the teachers assigned to the duty
+ *    - getRoom, String, gets the location of the duty
+ *    - getTimeSlot, String, gets the time slot of the duty
+ *    - setName, void, sets the name of the duty
+ *    - setDescription, void, sets the description of the duty
+*/
 public class Duty {
-    // Duty rotation constants
-    private static final String DAY_1_PREFIX = "D1";
-    private static final String DAY_2_PREFIX = "D2";
     
     // Time slot constants
     private static final String PERIOD_1 = "[per 1]";

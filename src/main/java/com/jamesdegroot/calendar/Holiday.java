@@ -3,8 +3,22 @@ package com.jamesdegroot.calendar;
 import java.time.LocalDate;
 
 /**
- * Represents a holiday in the calendar.
- */
+ * Holiday.java
+ * Name: James de Groot
+ * Date: January 13, 2025
+ *
+ * 	Purpose: 
+ *    Holiday class, used to store the holiday and the start and end dates of the holiday
+ *      
+ *  Methods:
+ * 	  - Holiday, constructor, creates a holiday object with the given summary, start date, end date, and description
+ *    - getSummary, String, gets the summary of the holiday
+ *    - getStartDate, LocalDate, gets the start date of the holiday
+ *    - getEndDate, LocalDate, gets the end date of the holiday
+ *    - getDescription, String, gets the description of the holiday
+ *    - isSchoolDay, boolean, checks if the holiday is a school day
+*/
+
 public class Holiday {
     private String summary;
     private LocalDate startDate;

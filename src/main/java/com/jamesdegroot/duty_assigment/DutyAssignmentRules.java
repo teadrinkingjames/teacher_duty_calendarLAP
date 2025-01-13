@@ -2,19 +2,28 @@ package com.jamesdegroot.duty_assigment;
 
 import com.jamesdegroot.teacher.Teacher;
 import java.time.LocalDate;
-import java.time.DayOfWeek;
 import java.util.List;
-import java.time.Month;
-import com.jamesdegroot.calendar.Day;
-import com.jamesdegroot.calendar.Duty;
 import java.util.Map;
 import java.util.HashMap;
 
+/**
+ * DutyAssignmentRules.java
+ * Name: James de Groot
+ * Date: January 13, 2025
+ *
+ * 	Purpose: 
+ *    DutyAssignmentRules class, used to store the rules for assigning duties to teachers
+ *      
+ *  Methods:
+ * 	  - canAssignDuty, boolean, checks if a teacher can be assigned a duty based on their schedule
+ *    - canDoAdjacentPeriodDuty, boolean, checks if a teacher can do a duty based on their schedule in adjacent periods
+ *    - hasClassDuringTimeSlot, boolean, checks if a teacher has a class during the specified time slot
+ *    - getTimeSlot, int, converts a duty time slot string to a schedule index
+ *    - isDay1, boolean, checks if a given date is a Day 1 in the schedule rotation
+ *    - getDayRotation, String, gets the day rotation identifier for a given date
+*/
+
 public class DutyAssignmentRules {
-    // Constants for duty limits
-    private static final int MAX_DUTIES_PER_WEEK = 3;
-    private static final int MAX_CONSECUTIVE_DAYS = 1;
-    
     // Day rotation constants
     private static final String DAY_1_IDENTIFIER = "D1";
     private static final String DAY_2_IDENTIFIER = "D2";
@@ -29,18 +38,18 @@ public class DutyAssignmentRules {
     
     // Period mapping constants - maps duty slots to teacher schedule indices
     private static final int[] PERIOD_TO_SCHEDULE_MAP = {
-        0,  // Period 1 -> Schedule index 0
-        1,  // Period 2 -> Schedule index 1
-        1,  // Lunch A -> Maps to Period 2 (same time slot)
-        2,  // Lunch B -> Maps to Period 3 (same time slot)
-        2,  // Period 3 -> Schedule index 2
-        3,  // Period 4 -> Schedule index 3
-        4,  // Period 5 -> Schedule index 4
-        5,  // Period 6 -> Schedule index 5
-        6,  // Period 7 -> Schedule index 6
-        7,  // Period 8 -> Schedule index 7
-        8,  // Period 9 -> Schedule index 8
-        9   // Period 10 -> Schedule index 9
+        0,  //
+        1,  //
+        1,  //
+        2,  //
+        2,  //
+        3,  //
+        4,  //
+        5,  //
+        6,  //
+        7,  //
+        8,  
+        9   
     };
     
     // Map duty time slots to schedule indices
@@ -128,6 +137,12 @@ public class DutyAssignmentRules {
      */
     private static boolean hasClassDuringTimeSlot(Teacher teacher, int timeSlot) {
         List<String> schedule = teacher.getSchedule();
+        // print schedule
+        // for (String slot : schedule) {
+        //     System.out.println(slot);
+        // }
+
+        // System.out.println("timeSlot: " + timeSlot);
         
         // Check if the time slot is valid
         if (timeSlot < 0 || timeSlot >= PERIOD_TO_SCHEDULE_MAP.length) {
@@ -136,9 +151,9 @@ public class DutyAssignmentRules {
         }
         
         int scheduleIndex = PERIOD_TO_SCHEDULE_MAP[timeSlot];
-        
+        System.out.println("scheduleIndex: " + scheduleIndex + !schedule.get(scheduleIndex).trim().equals(""));
         if (scheduleIndex >= 0 && scheduleIndex < schedule.size()) {
-            return !schedule.get(scheduleIndex).trim().isEmpty();
+            return !schedule.get(scheduleIndex).trim().equals("");
         }
         
         // If we get here, the schedule index was out of bounds
@@ -146,32 +161,7 @@ public class DutyAssignmentRules {
             scheduleIndex, teacher.getName(), schedule.size());
         return false;
     }
-    
-    /**
-     * Checks if teacher has exceeded their duty limit for the given date
-     */
-    private static boolean exceedsDutyLimit(Teacher teacher, LocalDate date) {
-        // Check if teacher has reached their maximum duties for the semester
-        if (teacher.getDutiesThisSemester() >= teacher.getMaxDutiesPerSemester()) {
-            return true;
-        }
-        
-        // Check weekly duty count
-        // For now, we'll just use the semester count as a proxy for weekly count
-        if (teacher.getDutiesThisSemester() > MAX_DUTIES_PER_WEEK * 2) { // Allow for both Day 1 and Day 2
-            return true;
-        }
-        
-        return false;
-    }
-    
-    /**
-     * Checks if teacher already has a duty on the opposite day rotation
-     */
-    private static boolean hasOppositeDayDuty(Teacher teacher, LocalDate date, boolean isDay1Duty) {
-        // Allow teachers to have duties on both Day 1 and Day 2
-        return false;
-    }
+ 
     
     /**
      * Converts a duty time slot string to a schedule index
@@ -184,81 +174,5 @@ public class DutyAssignmentRules {
             return -1;
         }
         return TIME_SLOT_MAP.getOrDefault(timeSlot, -1);
-    }
-    
-    /**
-     * Checks if a teacher has any classes in the given term
-     */
-    private static boolean hasClassesInTerm(Teacher teacher, LocalDate date) {
-        List<String> schedule = teacher.getSchedule();
-        
-        // Check if teacher has any classes in their schedule
-        boolean hasClasses = false;
-        for (String slot : schedule) {
-            if (!slot.trim().isEmpty()) {
-                hasClasses = true;
-                break;
-            }
-        }
-        
-        if (!hasClasses) {
-            return false;
-        }
-        
-        // Term boundaries
-        LocalDate term1Start = LocalDate.of(2024, Month.SEPTEMBER, 3);
-        LocalDate term2Start = LocalDate.of(2024, Month.NOVEMBER, 1);
-        LocalDate term3Start = LocalDate.of(2025, Month.FEBRUARY, 1);
-        LocalDate term4Start = LocalDate.of(2025, Month.APRIL, 1);
-        LocalDate term4End = LocalDate.of(2025, Month.JUNE, 28);
-        
-        // Check which term this date falls into
-        if (date.isBefore(term1Start) || date.isAfter(term4End)) {
-            return false;
-        }
-        
-        // All terms are valid for teachers with classes
-        return true;
-    }
-
-    /**
-     * Checks if a teacher has exceeded their weekly duty limit
-     * @param teacher The teacher to check
-     * @param date The date of the duty
-     * @return true if the teacher has exceeded their weekly limit
-     */
-    private static boolean exceedsWeeklyDutyLimit(Teacher teacher, LocalDate date, List<Day> daysInWeek) {
-        // If teacher is under their semester limit, be more flexible with weekly limits
-        if (teacher.getDutiesThisSemester() < teacher.getMaxDutiesPerSemester() * 0.8) {
-            return false;
-        }
-        
-        int weeklyDuties = 0;
-        
-        // Count duties in the same week
-        for (Day day : daysInWeek) {
-            Duty[][] duties = day.getDutySchedule();
-            for (Duty[] timeSlot : duties) {
-                for (Duty duty : timeSlot) {
-                    if (duty != null) {
-                        // Check both Day 1 and Day 2 assignments
-                        if (duty.getDay1Teachers().contains(teacher.getName())) {
-                            weeklyDuties++;
-                        }
-                        if (duty.getDay2Teachers().contains(teacher.getName())) {
-                            weeklyDuties++;
-                        }
-                    }
-                }
-            }
-        }
-        
-        // Allow more duties per week if teacher is under their semester limit
-        int maxWeeklyDuties = MAX_DUTIES_PER_WEEK;
-        if (teacher.getDutiesThisSemester() < teacher.getMaxDutiesPerSemester() * 0.5) {
-            maxWeeklyDuties += 1;  // Allow one extra duty per week for teachers under 50% of their limit
-        }
-        
-        return weeklyDuties >= maxWeeklyDuties;
     }
 } 

@@ -1,9 +1,18 @@
 package com.jamesdegroot.teacher;
 
 /**
- * Enum representing possible teaching load statuses.
- * Values represent fractions of a full teaching load.
- */
+ * TeacherScheduleStatusEnum.java
+ * Name: James de Groot
+ * Date: January 13, 2025
+ *
+ * 	Purpose: 
+ *    TeacherScheduleStatusEnum enum, used to represent the teacher's schedule status
+ *      
+ *  Methods:
+ * 	  - none
+ * 
+*/
+
 public enum TeacherScheduleStatusEnum {
     OVER_FULL_TIME,  // >6/6
     FULL_TIME,       // 6/6
@@ -14,6 +23,7 @@ public enum TeacherScheduleStatusEnum {
     ONE_SIXTH,       // 1/6
     NO_LOAD          // 0/6
 } 
+
 
 /*
  * IMPORTANT CLASS CODES:

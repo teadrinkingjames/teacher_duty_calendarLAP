@@ -5,7 +5,44 @@ import java.util.ArrayList;
 import java.util.Set;
 import java.util.HashSet;
 import com.jamesdegroot.calendar.Duty;
-import com.jamesdegroot.duty_assigment.DutyAssignmentRules;
+
+/**
+ * Teacher.java
+ * Name: James de Groot
+ * Date: January 13, 2025
+ *
+ * 	Purpose: 
+ *    Teacher class, used to create a teacher object
+ *      
+ *  Methods:
+ * 	  - Teacher, constructor, creates a new Teacher object
+ *    - addScheduleItem, void, adds a schedule item to the teacher's schedule
+ *    - calculateTimeAllocation, void, calculates the teacher's time allocation
+ *    - calculateScheduleStatus, void, calculates the teacher's schedule status
+ *    - determineTeacherType, TeacherTypeEnum, determines the teacher's type
+ *    - calculateMaxDutiesPerSemester, void, calculates the teacher's max duties per semester
+ *    - toString, String, returns a string representation of the teacher's schedule
+ *    - getName, String, gets the teacher's name
+ *    - getTimeAllocation, double, gets the teacher's time allocation
+ *    - getClassScheduleStatus, TeacherScheduleStatusEnum, gets the teacher's schedule status
+ *    - getFilledPeriods, int, gets the number of filled periods in the teacher's schedule
+ *    - getJobType, TeacherTypeEnum, gets the teacher's job type
+ *    - setJobType, void, sets the teacher's job type
+ *    - getMaxDutiesPerSemester, int, gets the teacher's max duties per semester
+ *    - getDutiesThisSemester, int, gets the number of duties assigned to the teacher this semester
+ *    - incrementDutiesThisSemester, void, increments the number of duties assigned to the teacher this semester
+ *    - resetDutiesThisSemester, void, resets the number of duties assigned to the teacher this semester
+ *    - getSchedule, List<String>, gets the teacher's schedule
+ *    - incrementDutiesForTerm, void, increments the number of duties for a specific term
+ *    - getDutiesForTerm, int, gets the number of duties for a specific term
+ *    - hasDutyInSemester, boolean, checks if the teacher has any duties in a specific semester
+ *    - hasClassInSemester, boolean, checks if the teacher has any classes in a specific semester
+ *    - assignDuty, void, assigns a duty to the teacher
+ *    - hasDutyAssigned, boolean, checks if the teacher has a specific duty assigned
+ *    - resetDutiesForNewSemester, void, resets the number of duties for a new semester
+ *    - canDoDuty, boolean, checks if the teacher can perform a specific duty
+*/
+
 
 public class Teacher {
     // Schedule constants
@@ -406,18 +443,18 @@ public class Teacher {
         assignedDuties.clear();
     }
 
-    /**
-     * Checks if a teacher can perform a specific duty based on their schedule.
-     * @param duty The duty to check
-     * @return true if the teacher can perform the duty, false otherwise
-     */
-    public boolean canDoDuty(Duty duty) {
-        // Get the time slot index from the duty's time slot string
-        int timeSlot = DutyAssignmentRules.getTimeSlot(duty.getTimeSlot());
-        if (timeSlot == -1) return false; // Invalid time slot
+    // /**
+    //  * Checks if a teacher can perform a specific duty based on their schedule.
+    //  * @param duty The duty to check
+    //  * @return true if the teacher can perform the duty, false otherwise
+    //  */
+    // public boolean canDoDuty(Duty duty) {
+    //     // Get the time slot index from the duty's time slot string
+    //     int timeSlot = DutyAssignmentRules.getTimeSlot(duty.getTimeSlot());
+    //     if (timeSlot == -1) return false; // Invalid time slot
         
-        // Check if teacher has a class during this time slot
-        String classAtTime = schedule.get(timeSlot);
-        return classAtTime == "" || classAtTime.trim().isEmpty();
-    }
+    //     // Check if teacher has a class during this time slot
+    //     String classAtTime = schedule.get(timeSlot);
+    //     return classAtTime == "" || classAtTime.trim().isEmpty();
+    // }
 }

@@ -12,9 +12,23 @@ import java.util.Optional;
 import com.jamesdegroot.GenerateDutyCalendar;
 
 /**
- * This class will define the object that will be used to store the calendar.
- * store the events and the teachers that are assigned to the events.   
- */ 
+ * Calendar.java
+ * Name: James de Groot
+ * Date: January 13, 2025
+ *
+ * 	Purpose: 
+ *    Calendar class, used to store the calendar and the events and the teachers that are assigned to the events.
+ *      
+ *  Methods:
+ * 	  - loadFromICS, void, loads the calendar from an ICS file
+ *    - parseDate, LocalDate, parses a date string into a LocalDate object
+ *    - isSchoolDay, boolean, checks if a given date is a school day
+ *    - getEvents, List<Holiday>, returns the list of events
+ *    - printSchoolDays, void, prints the school days between two dates
+ *    - initializeDaysOfYear, void, initializes the days of the year for 2024
+ *    - getDaysOfYear, List<Day>, returns the list of days in the year
+ *    - addHoliday, void, adds a holiday to the calendar
+*/
 public class Calendar {
     // Calendar constants
     private static final int DEFAULT_DAYS_IN_YEAR = 365;

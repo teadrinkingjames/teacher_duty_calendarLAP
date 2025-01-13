@@ -14,6 +14,32 @@ import java.util.Map;
 import java.util.EnumMap;
 import java.util.Arrays;
 
+/**
+ * DutyAssigner.java
+ * Name: James de Groot
+ * Date: January 13, 2025
+ *
+ * 	Purpose: 
+ *    DutyAssigner class, used to assign duties to teachers based on their schedule and the duties they can do
+ *      
+ *  Methods:
+ * 	  - assignDuties, void, assigns duties to teachers based on their schedule and the duties they can do
+ *    - printDutySchedule, void, prints the duty schedule for all terms
+ *    - loadTestData, void, loads test data from resource files
+ *    - assignDutiesForTeacher, void, assigns duties to a single teacher across both semesters
+ *    - assignDutiesInTerm, boolean, attempts to assign a duty to a teacher within a specific term
+ *    - tryAssignDutyToTeacher, boolean, attempts to assign a specific duty to a teacher
+ *    - initializeTermPatternGroups, void, initializes the term pattern groups data structure
+ *    - getTermDaysForSemester, List<List<Day>>, gets the days for each term in a semester
+ *    - getDaysForTerm, List<Day>, gets the days for a specific term
+ *    - getSchoolDays, List<Day>, gets all school days from the calendar
+ *    - addPatternDaysToList, void, adds days to a list based on the pattern and term
+ *    - getDayPattern, DayPattern, gets the day pattern for a specific day of the week and day type
+ *    - printPatternCounts, void, prints the pattern counts for debugging and verification
+ *    - printTeacherDutyCounts, void, prints a summary of teachers who haven't reached their maximum duties
+ * 
+*/
+
 public class DutyAssigner {
     // Calendar and teacher references
     private final Calendar calendar;
@@ -498,27 +524,27 @@ public class DutyAssigner {
         }
     }
 
-    /**
-     * Prints a summary of teachers who haven't reached their maximum duties
-     */
-    private void printTeacherDutyCounts() {
-        List<Teacher> teachersUnderMax = teachers.stream()
-            .filter(t -> t.getDutiesThisSemester() < t.getMaxDutiesPerSemester())
-            .collect(Collectors.toList());
+    // /**
+    //  * Prints a summary of teachers who haven't reached their maximum duties
+    //  */
+    // private void printTeacherDutyCounts() {
+    //     List<Teacher> teachersUnderMax = teachers.stream()
+    //         .filter(t -> t.getDutiesThisSemester() < t.getMaxDutiesPerSemester())
+    //         .collect(Collectors.toList());
             
-        if (!teachersUnderMax.isEmpty()) {
-            System.out.println("\nTeachers Under Maximum Duties:");
-            System.out.println("=".repeat(50));
-            System.out.printf("%-30s | %s/%s%n", "Teacher Name", "Current", "Max");
-            System.out.println("-".repeat(50));
+    //     if (!teachersUnderMax.isEmpty()) {
+    //         System.out.println("\nTeachers Under Maximum Duties:");
+    //         System.out.println("=".repeat(50));
+    //         System.out.printf("%-30s | %s/%s%n", "Teacher Name", "Current", "Max");
+    //         System.out.println("-".repeat(50));
             
-            for (Teacher teacher : teachersUnderMax) {
-                System.out.printf("%-30s | %d/%d%n", 
-                    teacher.getName(),
-                    teacher.getDutiesThisSemester(),
-                    teacher.getMaxDutiesPerSemester());
-            }
-            System.out.println("=".repeat(50));
-        }
-    }
+    //         for (Teacher teacher : teachersUnderMax) {
+    //             System.out.printf("%-30s | %d/%d%n", 
+    //                 teacher.getName(),
+    //                 teacher.getDutiesThisSemester(),
+    //                 teacher.getMaxDutiesPerSemester());
+    //         }
+    //         System.out.println("=".repeat(50));
+    //     }
+    // }
 } 

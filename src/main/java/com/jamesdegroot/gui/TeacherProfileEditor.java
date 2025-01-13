@@ -9,6 +9,24 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 
+/**
+ * TeacherProfileEditor.java
+ * Name: James de Groot
+ * Date: January 13, 2025
+ *
+ * 	Purpose: 
+ *    TeacherProfileEditor class, used to create the teacher profile editor dialog
+ *      
+ *  Methods:
+ * 	  - TeacherProfileEditor, constructor, creates a new TeacherProfileEditor object
+ *    - updateTeacher, void, updates the teacher object
+ *    - styleButton, void, styles the button
+ *    - updateForm, void, updates the form with the current teacher object
+ *    - createRow, JPanel, creates a new row for the form
+ *    - createLabeledField, JPanel, creates a new labeled field for the form
+ * 
+*/
+
 public class TeacherProfileEditor extends JDialog {
     // Window constants
     private static final String WINDOW_TITLE = "Teacher Profile Editor";

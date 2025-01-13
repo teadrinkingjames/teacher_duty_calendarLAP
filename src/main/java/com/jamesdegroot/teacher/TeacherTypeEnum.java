@@ -1,8 +1,18 @@
 package com.jamesdegroot.teacher;
 
 /**
- * Enum representing different types of teaching positions.
- */
+ * TeacherTypeEnum.java
+ * Name: James de Groot
+ * Date: January 13, 2025
+ *
+ * 	Purpose: 
+ *    TeacherTypeEnum enum, used to represent the teacher's type
+ *      
+ *  Methods:
+ * 	  - none
+ * 
+*/
+
 public enum TeacherTypeEnum {
     REGULAR,        // Standard classroom teacher
     COOP,           // Co-operative education teacher
