@@ -1,10 +1,12 @@
 package com.jamesdegroot.duty_assigment;
 
 import com.jamesdegroot.teacher.Teacher;
+import com.jamesdegroot.calendar.Duty;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Set;
 
 /**
  * DutyAssignmentRules.java
@@ -29,17 +31,17 @@ public class DutyAssignmentRules {
     private static final String DAY_2_IDENTIFIER = "D2";
     
     // Time slot constants
-    private static final int PERIOD_1_SLOT = 0;
+    //private static final int PERIOD_1_SLOT = 0;
     private static final int PERIOD_2_SLOT = 1;
     private static final int LUNCH_A_SLOT = 2;
     private static final int LUNCH_B_SLOT = 3;
     private static final int PERIOD_3_SLOT = 4;
-    private static final int PERIOD_4_SLOT = 5;
+    //private static final int PERIOD_4_SLOT = 5;
     
     // Period mapping constants - maps duty slots to teacher schedule indices
     private static final int[] PERIOD_TO_SCHEDULE_MAP = {
-        0,  //
-        1,  //
+        0,  // this is used as a conversion due to the way the schedule is stored
+        1,  // (it does not store the lunch slots)
         1,  //
         2,  //
         2,  //
@@ -98,14 +100,16 @@ public class DutyAssignmentRules {
      * @return true if the teacher can be assigned the duty
      */
     public static boolean canAssignDuty(Teacher teacher, int timeSlot) {
-        
         if (timeSlot == -1){ System.out.println("ERROR: Invalid time slot " + timeSlot); return false; }
+        
         // Check if teacher has classes during the duty time slot
         if (hasClassDuringTimeSlot(teacher, timeSlot)) return false;
         
         // Check adjacent period rules
         if (!canDoAdjacentPeriodDuty(teacher, timeSlot)) return false;
         
+        // Check for consecutive duties
+        if (hasConsecutiveDuty(teacher, timeSlot)) return false;
         
         return true;
     }
@@ -174,5 +178,24 @@ public class DutyAssignmentRules {
             return -1;
         }
         return TIME_SLOT_MAP.getOrDefault(timeSlot, -1);
+    }
+
+    /**
+     * Checks if a teacher has duties in adjacent time slots
+     * @param teacher The teacher to check
+     * @param timeSlot The time slot for the potential duty
+     * @return true if the teacher has a duty within 2 time slots before or after
+     */
+    private static boolean hasConsecutiveDuty(Teacher teacher, int timeSlot) {
+        Set<Duty> assignedDuties = teacher.getAssignedDuties();
+        
+        // Check duties within 2 time slots before and after
+        for (Duty duty : assignedDuties) {
+            int dutyTimeSlot = getTimeSlot(duty.getTimeSlot());
+            if (Math.abs(dutyTimeSlot - timeSlot) <= 2) {
+                return true;
+            }
+        }
+        return false;
     }
 } 

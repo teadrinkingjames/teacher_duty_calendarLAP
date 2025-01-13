@@ -443,6 +443,14 @@ public class Teacher {
         assignedDuties.clear();
     }
 
+    /**
+     * Gets the set of duties assigned to this teacher
+     * @return Set of duties assigned to this teacher
+     */
+    public Set<Duty> getAssignedDuties() {
+        return assignedDuties;
+    }
+
     // /**
     //  * Checks if a teacher can perform a specific duty based on their schedule.
     //  * @param duty The duty to check

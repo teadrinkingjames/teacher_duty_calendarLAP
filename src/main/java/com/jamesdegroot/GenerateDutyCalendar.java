@@ -61,7 +61,6 @@ public class GenerateDutyCalendar {
     public void processFile(File file) {
         this.selectedFile = file;
         teachers = ReadTeachersFromDisk.readTeachersNames(file.getAbsolutePath());
-        // printSummary(); //TODO: This takes a long time to run
     }
     
     /**
@@ -98,13 +97,12 @@ public class GenerateDutyCalendar {
         
         // Initialize the calendar days before printing
         calendar.initializeDaysOfYear();
-        
-        //calendar.printSchoolDays(startDate, endDate); //TODO: This takes a long time to run
     }
     
     /**
      * Prints a summary of the teacher schedule statuses.
      */
+    @SuppressWarnings("unused")
     private void printSummary() {
         System.out.println("\nDetailed Teacher Schedules:");
         System.out.println("=".repeat(NUM_OF_SEPERATORS_CHAR));

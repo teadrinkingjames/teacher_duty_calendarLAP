@@ -32,7 +32,6 @@ import com.jamesdegroot.GenerateDutyCalendar;
 public class Calendar {
     // Calendar constants
     private static final int DEFAULT_DAYS_IN_YEAR = 365;
-    private static final int SCHOOL_DAYS_IN_YEAR = 194;  // Mandated amount of school days
     
     // Date constants
     private static final int SCHOOL_YEAR_START_YEAR = 2024;
@@ -60,7 +59,7 @@ public class Calendar {
     private static final String TIME_SLOT_PREFIX = "Slot ";
     
     private List<Holiday> events;
-    private List<Day> daysOfYear = new ArrayList<>(DEFAULT_DAYS_IN_YEAR);
+    private List<Day> daysOfYear = new ArrayList<>(DEFAULT_DAYS_IN_YEAR); 
 
    
 
