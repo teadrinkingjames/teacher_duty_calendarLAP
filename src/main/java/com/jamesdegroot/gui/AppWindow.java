@@ -487,8 +487,12 @@ public class AppWindow {
         // Perform duty assignment
         appLogic.assignDuties();
         
+        // Write schedule to CSV file after all assignments are complete
+        String outputPath = "src/main/resources/duty_schedule.csv";
+        com.jamesdegroot.io.WriteScheduleToDisk.writeDutyScheduleToCSV(appLogic.getCalendar(), outputPath);
+        
         // Show completion message
-        System.out.println("\nDuty assignment completed!");
+        System.out.println("\nDuty assignment completed and schedule saved to: " + outputPath);
         System.out.println("=".repeat(GenerateDutyCalendar.NUM_OF_SEPERATORS_CHAR));
     }
 

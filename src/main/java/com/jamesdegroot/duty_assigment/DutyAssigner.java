@@ -85,35 +85,42 @@ public class DutyAssigner {
      * - Adjust assignDutiesForTeacher() for semester/term balancing
      */
     public void assignDuties() {
-        System.out.println("Starting duty assignment...\n");
+        System.out.println("\nAssigning duties for all terms...");
+        System.out.println("=".repeat(GenerateDutyCalendar.NUM_OF_SEPERATORS_CHAR));
         
+        // Initialize pattern groups for each term
         List<Day> schoolDays = getSchoolDays();
         initializeTermPatternGroups(schoolDays);
-        printPatternCounts();
         
-        // Create a copy of the teachers list
-        List<Teacher> availableTeachers = new ArrayList<>(teachers);
-        
-        // Make three passes over the teacher list
-        for (int pass = 1; pass <= 3; pass++) {
-            System.out.println("\nStarting Pass " + pass + " of duty assignment...");
-            
-            // Sort teachers by how far they are from their maximum duties
-            Collections.sort(availableTeachers, (t1, t2) -> {
-                int t1Remaining = t1.getMaxDutiesPerSemester() - t1.getDutiesThisSemester();
-                int t2Remaining = t2.getMaxDutiesPerSemester() - t2.getDutiesThisSemester();
-                return Integer.compare(t2Remaining, t1Remaining); // Most remaining duties first
-            });
-            
-            // Try to assign duties to each teacher
-            for (Teacher teacher : availableTeachers) {
-                if (teacher.getDutiesThisSemester() < teacher.getMaxDutiesPerSemester()) {
-                    assignDutiesForTeacher(teacher);
-                }
-            }
+        // First pass: Assign duties to teachers based on their schedule
+        for (Teacher teacher : teachers) {
+            assignDutiesForTeacher(teacher);
         }
         
-        System.out.println("\nDuty assignment completed!");
+        // Second pass: Try to assign remaining duties
+        for (Teacher teacher : teachers) {
+            assignDutiesForTeacher(teacher);
+        }
+        
+        // Third pass: Try to assign remaining duties
+        for (Teacher teacher : teachers) {
+            assignDutiesForTeacher(teacher);
+        }
+        
+        // Final pass: Allow two teachers per duty
+        for (Teacher teacher : teachers) {
+            assignDutiesForTeacherFinalPass(teacher);
+        }
+        
+        // Print pattern counts for debugging
+        printPatternCounts();
+        
+        // Print the complete duty schedule
+        printDutySchedule();
+        
+        // Write the complete schedule to CSV
+        String outputPath = "src/main/resources/duty_schedule.csv";
+        com.jamesdegroot.io.WriteScheduleToDisk.writeDutyScheduleToCSV(calendar, outputPath);
     }
 
     /**
@@ -547,4 +554,86 @@ public class DutyAssigner {
     //         System.out.println("=".repeat(50));
     //     }
     // }
+
+    /**
+     * Final pass assignment method that allows two teachers per duty
+     */
+    private void assignDutiesForTeacherFinalPass(Teacher teacher) {
+        if (teacher.getMaxDutiesPerSemester() == 0) {
+            System.out.println("Teacher " + teacher.getName() + " has no duties");
+            return;
+        }
+        
+        System.out.println("Final pass for teacher: " + teacher.getName());
+        List<String> classSchedule = teacher.getSchedule();
+        
+        for (int semester = 0; semester < 2; semester++) {
+            // Skip if teacher has no classes this semester
+            List<String> semesterClasses = semester == 0 ? 
+                classSchedule.subList(0, 5) : classSchedule.subList(5, 10);
+            if (semesterClasses.equals(Arrays.asList("", "", "", "", ""))) {
+                continue;
+            }
+            
+            int numberOfDutiesNeeded = teacher.getMaxDutiesPerSemester();
+            List<List<Day>> termDays = getTermDaysForSemester(semester);
+            
+            // Try to assign duties in each term // TODO: this may be where the incorrect assignments are happening
+            // for (int termIndex = 0; termIndex < termDays.size(); termIndex++) {
+            //     if (teacher.getDutiesThisSemester() >= numberOfDutiesNeeded) break;
+            //     assignDutiesInTermFinalPass(teacher, termDays.get(termIndex), semester * 2 + termIndex, numberOfDutiesNeeded);
+            // }
+        }
+    }
+
+    private boolean assignDutiesInTermFinalPass(Teacher teacher, List<Day> daysInTerm, int term, int numberOfDutiesNeeded) {
+        for (Day day : daysInTerm) {
+            if (teacher.getDutiesThisSemester() >= numberOfDutiesNeeded) return false;
+            
+            Duty[][] dutySchedule = day.getDutySchedule();
+            for (int timeSlot = 0; timeSlot < dutySchedule.length; timeSlot++) {
+                for (int pos = 0; pos < dutySchedule[timeSlot].length; pos++) {
+                    if (tryAssignDutyToTeacherFinalPass(teacher, day, dutySchedule[timeSlot][pos], term, numberOfDutiesNeeded)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean tryAssignDutyToTeacherFinalPass(Teacher teacher, Day day, Duty duty, int term, int numberOfDutiesNeeded) {
+        if (duty == null || teacher.hasDutyAssigned(duty)) return false;
+        
+        // Skip if duty already has two teachers assigned for this day type
+        if (day.isDay1() && duty.getDay1Teachers().size() >= 2) return false;
+        if (!day.isDay1() && duty.getDay2Teachers().size() >= 2) return false;
+        
+        // Skip if teacher cannot do this duty
+        int timeSlot = DutyAssignmentRules.getTimeSlot(duty.getTimeSlot());
+        if (!DutyAssignmentRules.canAssignDuty(teacher, timeSlot)) return false;
+        
+        DayPattern pattern = getDayPattern(day.getDate().getDayOfWeek(), day.isDay1());
+        int patternCount = termPatternGroups.get(term).get(pattern).size();
+        
+        // Check if assigning this duty would exceed the semester limit
+        if (teacher.getDutiesThisSemester() + patternCount <= numberOfDutiesNeeded) {
+            teacher.assignDuty(duty, patternCount);
+            
+            // Add teacher to the pattern's duty
+            if (day.isDay1()) {
+                duty.addDay1Teacher(teacher.getName());
+            } else {
+                duty.addDay2Teacher(teacher.getName());
+            }
+            
+            System.out.printf("Final pass assigned duty: %s to teacher: %s (worth %d duties, total now: %d, Day %s)%n",
+                duty.getName(), teacher.getName(), patternCount, teacher.getDutiesThisSemester(),
+                day.isDay1() ? "1" : "2");
+            
+            return true;
+        }
+        
+        return false;
+    }
 } 

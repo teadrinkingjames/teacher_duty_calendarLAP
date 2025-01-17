@@ -208,15 +208,6 @@ public class GenerateDutyCalendar {
         return calendar.isSchoolDay(date);
     }
     
-    // /**
-    //  * Prints the school days for a given date range.
-    //  * @param startDate the start date of the range
-    //  * @param endDate the end date of the range
-    //  */
-    // public void printSchoolDays(LocalDate startDate, LocalDate endDate) {
-    //     calendar.printSchoolDays(startDate, endDate);
-    // }
-    
     /**
      * Gets the calendar.
      * @return the calendar
@@ -241,11 +232,17 @@ public class GenerateDutyCalendar {
     public void printSchedule() {
         // Define term dates
         LocalDate[][] termDates = {
-            {LocalDate.of(2024, 9, 3), LocalDate.of(2024, 10, 31)},    // Term 1
-            {LocalDate.of(2024, 11, 1), LocalDate.of(2025, 1, 31)},    // Term 2
-            {LocalDate.of(2025, 2, 1), LocalDate.of(2025, 3, 31)},     // Term 3
-            {LocalDate.of(2025, 4, 1), LocalDate.of(2025, 6, 28)}      // Term 4
+            {LocalDate.of(2024, 9, 3), LocalDate.of(2024, 11, 7)},    // Term 1
+            {LocalDate.of(2024, 11, 8), LocalDate.of(2025, 2, 1)},    // Term 2
+            {LocalDate.of(2025, 2, 2), LocalDate.of(2025, 4, 4)},     // Term 3
+            {LocalDate.of(2025, 4, 5), LocalDate.of(2025, 6, 28)}      // Term 4
         };
+        // print the number of days in each term
+        System.out.println("Number of days in each term:");
+        System.out.println("Term 1: " + (termDates[0][1].getDayOfYear() - termDates[0][0].getDayOfYear()) + 1);
+        System.out.println("Term 2: " + (termDates[1][1].getDayOfYear() - termDates[1][0].getDayOfYear()) + 1);
+        System.out.println("Term 3: " + (termDates[2][1].getDayOfYear() - termDates[2][0].getDayOfYear()) + 1);
+        System.out.println("Term 4: " + (termDates[3][1].getDayOfYear() - termDates[3][0].getDayOfYear()) + 1);
         
         String[] termNames = {
             "Term 1 (Fall Term 1)",
@@ -295,7 +292,6 @@ public class GenerateDutyCalendar {
                         }
                     }
                     
-                    // Add separator between days
                     System.out.println("-".repeat(NUM_OF_SEPERATORS_CHAR));
                 }
             }

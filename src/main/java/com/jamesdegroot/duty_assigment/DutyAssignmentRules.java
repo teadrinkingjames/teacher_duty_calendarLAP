@@ -23,6 +23,7 @@ import java.util.Set;
  *    - getTimeSlot, int, converts a duty time slot string to a schedule index
  *    - isDay1, boolean, checks if a given date is a Day 1 in the schedule rotation
  *    - getDayRotation, String, gets the day rotation identifier for a given date
+ *    - hasConsecutiveDuty, boolean, checks if a teacher has duties in adjacent time slots
 */
 
 public class DutyAssignmentRules {
@@ -155,7 +156,7 @@ public class DutyAssignmentRules {
         }
         
         int scheduleIndex = PERIOD_TO_SCHEDULE_MAP[timeSlot];
-        System.out.println("scheduleIndex: " + scheduleIndex + !schedule.get(scheduleIndex).trim().equals(""));
+        //System.out.println("scheduleIndex: " + scheduleIndex + !schedule.get(scheduleIndex).trim().equals(""));
         if (scheduleIndex >= 0 && scheduleIndex < schedule.size()) {
             return !schedule.get(scheduleIndex).trim().equals("");
         }
