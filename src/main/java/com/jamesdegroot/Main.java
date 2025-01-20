@@ -29,5 +29,10 @@ public class Main {
         //TestDataLoader.loadTestData(appLogic);
         
         window.show();
+        System.out.println("Hello World");
+        System.out.println("Load files using the two text fields above, and then press the 'Generate' button");
+        System.out.println("calendar should be an ics file, and teachers should be a csv file");
+        System.out.println("because the start date of the school year is not included in the ics file, it is hard coded to sept 3, 2024");
+        System.out.println("Good luck!");
     }
 } 

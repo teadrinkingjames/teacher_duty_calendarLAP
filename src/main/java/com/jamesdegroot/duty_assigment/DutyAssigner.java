@@ -4,7 +4,6 @@ import com.jamesdegroot.teacher.Teacher;
 import com.jamesdegroot.calendar.Calendar;
 import com.jamesdegroot.calendar.Day;
 import com.jamesdegroot.calendar.Duty;
-import com.jamesdegroot.GenerateDutyCalendar;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
@@ -80,9 +79,6 @@ public class DutyAssigner {
      *    - Ensure balanced distribution between terms
      */
     public void assignDuties() {
-        System.out.println("\nAssigning duties for all terms...");
-        System.out.println("=".repeat(GenerateDutyCalendar.NUM_OF_SEPERATORS_CHAR));
-        
         // Initialize pattern groups for each term
         List<Day> schoolDays = getSchoolDays();
         initializeTermPatternGroups(schoolDays);
@@ -199,7 +195,8 @@ public class DutyAssigner {
      */
     private void assignDutiesForTeacher(Teacher teacher) {
         if (teacher.getMaxDutiesPerSemester() == 0) {
-            System.out.println("Teacher " + teacher.getName() + " has no duties");
+            // DEBUGGING, prints the teacher name, if they have no classes in the semester
+            //System.out.println("Teacher " + teacher.getName() + " has no duties");
             return;
         }
         
@@ -602,10 +599,10 @@ public class DutyAssigner {
             } else {
                 duty.addDay2Teacher(teacher.getName());
             }
-            
-            System.out.printf("Final pass assigned duty: %s to teacher: %s (worth %d duties, total now: %d, Day %s)%n",
-                duty.getName(), teacher.getName(), patternCount, teacher.getDutiesThisSemester(),
-                day.isDay1() ? "1" : "2");
+            // DEBUGGING, prints the duty assignment
+            // System.out.printf("Final pass assigned duty: %s to teacher: %s (worth %d duties, total now: %d, Day %s)%n",
+            //     duty.getName(), teacher.getName(), patternCount, teacher.getDutiesThisSemester(),
+            //     day.isDay1() ? "1" : "2");
             
             return true;
         }
