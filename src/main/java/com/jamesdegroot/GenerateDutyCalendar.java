@@ -223,7 +223,7 @@ public class GenerateDutyCalendar {
         dutyAssigner = new DutyAssigner(calendar, teachers);
         dutyAssigner.assignDuties();
         dutyAssigner.printDutySchedule();
-        printTeacherDutyCounts();
+        //printTeacherDutyCounts();
     }
     
     /**
