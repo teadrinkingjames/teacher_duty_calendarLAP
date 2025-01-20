@@ -3,7 +3,6 @@ package com.jamesdegroot.io;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.time.LocalDate;
 import java.util.List;
 
 import com.jamesdegroot.calendar.Calendar;
@@ -34,56 +33,55 @@ public class WriteScheduleToDisk {
      * @param outputPath The path to write the CSV file to
      */
     public static void writeDutyScheduleToCSV(Calendar calendar, String outputPath) {
-        // Define term dates
-        LocalDate[][] termDates = {
-            {LocalDate.of(2024, 9, 3), LocalDate.of(2024, 11, 7)},    // Term 1
-            {LocalDate.of(2024, 11, 8), LocalDate.of(2025, 2, 1)},    // Term 2
-            {LocalDate.of(2025, 2, 2), LocalDate.of(2025, 4, 4)},     // Term 3
-            {LocalDate.of(2025, 4, 5), LocalDate.of(2025, 6, 28)}     // Term 4
-        };
-        
-        String[] termNames = {
-            "Term 1",
-            "Term 2",
-            "Term 3",
-            "Term 4"
-        };
-        
         try (PrintWriter writer = new PrintWriter(new FileWriter(outputPath))) {
-            // Write header
             writer.println(CSV_HEADER);
             
-            // For each term
-            for (int term = 0; term < 4; term++) {
-                final int currentTerm = term;
-                
-                // For each day of week (Monday to Friday)
+            // Process each term
+            for (int term = 1; term <= 4; term++) {
+                // Process each weekday (Monday to Friday)
                 for (int dayOfWeek = 1; dayOfWeek <= 5; dayOfWeek++) {
                     final int currentDayOfWeek = dayOfWeek;
-                    List<Day> daysForThisWeekday = calendar.getDaysOfYear().stream()
-                        .filter(day -> day.getDate().getDayOfWeek().getValue() == currentDayOfWeek)
+                    
+                    // Get Day 1 and Day 2 samples for this weekday
+                    List<Day> daysForWeekday = calendar.getDaysOfYear().stream()
                         .filter(Day::isSchoolDay)
-                        .filter(day -> {
-                            LocalDate date = day.getDate();
-                            return !date.isBefore(termDates[currentTerm][0]) && !date.isAfter(termDates[currentTerm][1]);
-                        })
+                        .filter(day -> day.getDate().getDayOfWeek().getValue() == currentDayOfWeek)
                         .toList();
                     
-                    if (!daysForThisWeekday.isEmpty()) {
-                        Day sampleDay = daysForThisWeekday.get(0);
-                        String weekdayName = sampleDay.getDate().getDayOfWeek().toString();
+                    if (!daysForWeekday.isEmpty()) {
+                        // Get separate Day 1 and Day 2 samples
+                        Day day1Sample = daysForWeekday.stream()
+                            .filter(Day::isDay1)
+                            .findFirst()
+                            .orElse(null);
+                            
+                        Day day2Sample = daysForWeekday.stream()
+                            .filter(day -> !day.isDay1())
+                            .findFirst()
+                            .orElse(null);
                         
-                        // Print duties for this day
-                        Duty[][] dutySchedule = sampleDay.getDutySchedule();
-                        for (int timeSlot = 0; timeSlot < dutySchedule.length; timeSlot++) {
-                            for (Duty duty : dutySchedule[timeSlot]) {
-                                if (duty != null) {
-                                    writer.printf(CSV_FORMAT,
-                                        termNames[currentTerm],
-                                        weekdayName,
-                                        duty.getName(),
-                                        String.join(", ", duty.getDay1Teachers()),
-                                        String.join(", ", duty.getDay2Teachers()));
+                        // Use either day as template (they should have same duty structure)
+                        Day templateDay = day1Sample != null ? day1Sample : day2Sample;
+                        if (templateDay != null) {
+                            String weekdayName = templateDay.getDate().getDayOfWeek().toString();
+                            
+                            // Write duties for this weekday
+                            Duty[][] dutySchedule = templateDay.getDutySchedule();
+                            for (int timeSlot = 0; timeSlot < dutySchedule.length; timeSlot++) {
+                                for (int pos = 0; pos < dutySchedule[timeSlot].length; pos++) {
+                                    Duty duty1 = day1Sample != null ? day1Sample.getDutySchedule()[timeSlot][pos] : null;
+                                    Duty duty2 = day2Sample != null ? day2Sample.getDutySchedule()[timeSlot][pos] : null;
+                                    
+                                    // Use either duty as template (they should have same name)
+                                    Duty templateDuty = duty1 != null ? duty1 : duty2;
+                                    if (templateDuty != null) {
+                                        writer.printf(CSV_FORMAT,
+                                            "Term " + term,
+                                            weekdayName,
+                                            templateDuty.getName(),
+                                            duty1 != null ? String.join(", ", duty1.getDay1Teachers()) : "",
+                                            duty2 != null ? String.join(", ", duty2.getDay2Teachers()) : "");
+                                    }
                                 }
                             }
                         }
