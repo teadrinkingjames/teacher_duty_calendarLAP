@@ -150,12 +150,6 @@ public class Day {
      * @return term number (0 for Term 1, 1 for Term 2, etc)
      */
     public int getTermNumber() {
-        // LocalDate[][] termDates = {
-        //     {LocalDate.of(2024, 9, 3), LocalDate.of(2024, 10, 29)},    // Term 1
-        //     {LocalDate.of(2024, 10, 30), LocalDate.of(2025, 1, 26)},    // Term 2
-        //     {LocalDate.of(2025, 1, 27), LocalDate.of(2025, 4, 3)},     // Term 3
-        //     {LocalDate.of(2025, 4, 4), LocalDate.of(2025, 6, 28)}      // Term 4
-        // };
         LocalDate term1Start = LocalDate.of(2024, Month.SEPTEMBER, 3);
         LocalDate term2Start = LocalDate.of(2024, Month.NOVEMBER, 7);
         LocalDate term3Start = LocalDate.of(2025, Month.FEBRUARY, 1);

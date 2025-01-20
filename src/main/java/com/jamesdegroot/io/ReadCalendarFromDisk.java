@@ -15,9 +15,10 @@ import com.jamesdegroot.calendar.Holiday;
  * Name: James de Groot
  * Date: January 13, 2025
  *
- * 	Purpose: 
- *    ReadCalendarFromDisk class, used to read the calendar from an ICS file
- *      
+ * Purpose: 
+ *    Reads and parses an ICS calendar file (standard calendar format) to extract school holidays
+ *    and special events. This information is used to determine school days and duty scheduling.
+ *
  *  Methods:
  * 	  - loadCalendarFromICS, void, loads the calendar from an ICS file
  *    - parseDate, LocalDate, parses a date string from ICS format to LocalDate
@@ -25,30 +26,26 @@ import com.jamesdegroot.calendar.Holiday;
 */
 
 public class ReadCalendarFromDisk {
-    // ICS file event markers
+    // Standard ICS file markers and field identifiers
     private static final String EVENT_START = "BEGIN:VEVENT";
     private static final String EVENT_END = "END:VEVENT";
-    
-    // ICS file field prefixes
     private static final String SUMMARY_PREFIX = "SUMMARY:";
     private static final String START_DATE_PREFIX = "DTSTART;VALUE=DATE:";
     private static final String END_DATE_PREFIX = "DTEND;VALUE=DATE:";
     private static final String DESCRIPTION_PREFIX = "DESCRIPTION:";
     
-    // Field lengths for substring operations
+    // Prefix lengths for efficient string parsing
     private static final int SUMMARY_PREFIX_LENGTH = 8;
     private static final int START_DATE_PREFIX_LENGTH = 17;
     private static final int END_DATE_PREFIX_LENGTH = 15;
     private static final int DESCRIPTION_PREFIX_LENGTH = 12;
     
-    // Date format pattern
     private static final String DATE_FORMAT_PATTERN = "yyyyMMdd";
     
     /**
-     * Loads calendar events from an ICS file into a Calendar object.
-     * @param calendar The Calendar object to populate
-     * @param file The ICS file to read
-     * @throws IOException if file reading fails (caught internally)
+     * Processes an ICS file line by line, collecting event details until a complete
+     * holiday event is found (marked by EVENT_END). Each complete event is added
+     * to the calendar as a Holiday object.
      */
     public static void loadCalendarFromICS(Calendar calendar, File file) {
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
@@ -61,6 +58,7 @@ public class ReadCalendarFromDisk {
             
             while ((line = reader.readLine()) != null) {
                 if (line.startsWith(EVENT_START)) {
+                    // Reset fields for new event
                     summary = null;
                     startDate = null;
                     endDate = null;
@@ -74,6 +72,7 @@ public class ReadCalendarFromDisk {
                 } else if (line.startsWith(DESCRIPTION_PREFIX)) {
                     description = line.substring(DESCRIPTION_PREFIX_LENGTH);
                 } else if (line.startsWith(EVENT_END) && summary != null && startDate != null && endDate != null) {
+                    // Create and add holiday only if all required fields are present
                     currentHoliday = new Holiday(summary, startDate, endDate, description);
                     calendar.addHoliday(currentHoliday);
                 }
@@ -84,10 +83,8 @@ public class ReadCalendarFromDisk {
     }
 
     /**
-     * Parses a date string from ICS format to LocalDate.
-     * @param dateStr The date string in yyyyMMdd format
-     * @return LocalDate object, or null if parsing fails
-     * @throws Exception if parsing fails
+     * Handles ICS date format conversion. ICS dates may contain additional characters,
+     * so we clean the string before parsing (e.g., "20240115T000000Z" -> "20240115").
      */
     private static LocalDate parseDate(String dateStr) {
         dateStr = dateStr.replaceAll("[^0-9]", "");

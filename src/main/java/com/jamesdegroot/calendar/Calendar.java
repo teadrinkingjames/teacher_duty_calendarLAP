@@ -17,7 +17,14 @@ import com.jamesdegroot.GenerateDutyCalendar;
  * Date: January 13, 2025
  *
  * 	Purpose: 
- *    Calendar class, used to store the calendar and the events and the teachers that are assigned to the events.
+ *    Manages the school year calendar, including:
+ *    - School days and holidays tracking
+ *    - Duty schedules for each school day
+ *    - Day 1/Day 2 rotation system
+ *    - Teacher duty assignments
+ *    
+ *    The calendar spans from September 2024 to June 2025, handling both
+ *    regular school days and special events/holidays loaded from ICS files.
  *      
  *  Methods:
  * 	  - loadFromICS, void, loads the calendar from an ICS file
@@ -30,10 +37,8 @@ import com.jamesdegroot.GenerateDutyCalendar;
  *    - addHoliday, void, adds a holiday to the calendar
 */
 public class Calendar {
-    // Calendar constants
+    // School year boundary definitions
     private static final int DEFAULT_DAYS_IN_YEAR = 365;
-    
-    // Date constants
     private static final int SCHOOL_YEAR_START_YEAR = 2024;
     private static final int SCHOOL_YEAR_START_MONTH = 9;
     private static final int SCHOOL_YEAR_START_DAY = 3;
@@ -41,7 +46,7 @@ public class Calendar {
     private static final int SCHOOL_YEAR_END_MONTH = 6;
     private static final int SCHOOL_YEAR_END_DAY = 28;
     
-    // ICS file parsing constants
+    // ICS file parsing markers (used for reading calendar events)
     private static final String EVENT_START = "BEGIN:VEVENT";
     private static final String EVENT_END = "END:VEVENT";
     private static final String SUMMARY_PREFIX = "SUMMARY:";
@@ -49,19 +54,17 @@ public class Calendar {
     private static final String END_DATE_PREFIX = "DTEND;VALUE=DATE:";
     private static final String DESCRIPTION_PREFIX = "DESCRIPTION:";
     
-    // Date format constants
     private static final String DATE_FORMAT_PATTERN = "yyyyMMdd";
     private static final String DISPLAY_DATE_FORMAT = "EEEE, MMMM d, yyyy";
     
-    // Display format constants
+    // Display formatting for duty schedules
     private static final String DUTY_FORMAT = "%-12s | %-30s | %-20s\n";
     private static final String UNASSIGNED_TEXT = "UNASSIGNED";
     private static final String TIME_SLOT_PREFIX = "Slot ";
     
+    // Core data structures: holidays/events and daily schedules
     private List<Holiday> events;
     private List<Day> daysOfYear = new ArrayList<>(DEFAULT_DAYS_IN_YEAR); 
-
-   
 
     public Calendar() {
         this.events = new ArrayList<>();
@@ -189,15 +192,19 @@ public class Calendar {
     }
 
     /**
-     * Initializes the days of the year for 2024
+     * Sets up the entire school year calendar by:
+     * 1. Creating Day objects for each day from Sept 2024 to June 2025
+     * 2. Marking weekends and holidays as non-school days
+     * 3. Initializing duty slots for each school day
+     * 4. Tracking school days per month for scheduling purposes
      */
     public void initializeDaysOfYear() {
         LocalDate startDate = LocalDate.of(SCHOOL_YEAR_START_YEAR, SCHOOL_YEAR_START_MONTH, SCHOOL_YEAR_START_DAY);
         LocalDate endDate = LocalDate.of(SCHOOL_YEAR_END_YEAR, SCHOOL_YEAR_END_MONTH, SCHOOL_YEAR_END_DAY);
         
-        // Initialize counters for school days by month
+        // Track school days vs total days per month for scheduling
         int[] schoolDaysByMonth = new int[12];  // Index 0 = January, 11 = December
-        int[] totalDaysByMonth = new int[12];   // Track total days for comparison
+        int[] totalDaysByMonth = new int[12];   
         
         LocalDate currentDate = startDate;
         while (!currentDate.isAfter(endDate)) {
@@ -206,13 +213,13 @@ public class Calendar {
             // Count total days
             totalDaysByMonth[currentDate.getMonthValue() - 1]++;
             
-            // Set school day status based on weekends and holidays
+            // Determine if it's a school day (not weekend or holiday)
             boolean isSchoolDay = true;
             if (currentDate.getDayOfWeek().getValue() >= 6) {
                 isSchoolDay = false;
             }
             for (Holiday event : events) {
-                // End date in ICS file is exclusive (the day after the holiday ends)
+                // Note: End date in ICS is exclusive
                 if (currentDate.equals(event.getStartDate()) || 
                     (currentDate.isAfter(event.getStartDate()) && 
                      currentDate.isBefore(event.getEndDate()))) {
@@ -232,12 +239,14 @@ public class Calendar {
                 for (int timeSlot = 0; timeSlot < Day.TIME_SLOTS; timeSlot++) {
                     for (int position = 0; position < Day.DUTIES_PER_SLOT; position++) {
                         int dutyIndex = (timeSlot * Day.DUTIES_PER_SLOT) + position;
-                        String dutyName = dutyIndex < Duty.DUTY_NAMES.length ? Duty.DUTY_NAMES[dutyIndex] : "Duty " + (dutyIndex + 1);
+                        String dutyName = dutyIndex < Duty.DUTY_NAMES.length ? 
+                            Duty.DUTY_NAMES[dutyIndex] : "Duty " + (dutyIndex + 1);
+                        
                         Duty duty = new Duty(
                             dutyName,
                             "",  // No description needed
                             "Various",  // room
-                            String.format(TIME_SLOT_PREFIX + "%d", timeSlot + 1)  // time slot
+                            String.format(TIME_SLOT_PREFIX + "%d", timeSlot + 1)
                         );
                         day.addDuty(timeSlot, position, duty);
                     }

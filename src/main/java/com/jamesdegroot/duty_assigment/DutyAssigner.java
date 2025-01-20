@@ -66,8 +66,6 @@ public class DutyAssigner {
         }
     }
 
-    // ===== Main Public Methods =====
-
     /**
      * Main method to assign duties for the entire school year.
      * 
@@ -132,10 +130,6 @@ public class DutyAssigner {
      * Day      | Duty              | Day 1 Teachers        | Day 2 Teachers
      * ------------------------------------------------------------------------
      * MONDAY   | Cafeteria        | Smith, Jones         | Brown, Wilson
-     * 
-     * QoL Note: To modify the schedule format:
-     * - Adjust column widths in the printf statements
-     * - Modify separator lengths (currently 135 chars)
      */
     public void printDutySchedule() {
         // For each term
@@ -227,8 +221,6 @@ public class DutyAssigner {
         }
     }
 
-    // ===== Core Duty Assignment Methods =====
-
     /**
      * Assigns duties to a single teacher across both semesters.
      * 
@@ -237,10 +229,6 @@ public class DutyAssigner {
      * 2. Skip if teacher has no classes this semester
      * 3. First pass: Try to assign non-Hall duties across both terms
      * 4. Second pass: If needed, assign Hall duties to meet quota
-     * 
-     * QoL Note: 
-     * - Modify numberOfDutiesNeeded calculation to adjust workload
-     * - Adjust the order of term processing to change distribution
      * 
      * @param teacher The teacher to assign duties to
      */
@@ -306,9 +294,6 @@ public class DutyAssigner {
      * 2. For each day, check all duty slots
      * 3. Try to assign each duty if it matches criteria
      * 
-     * QoL Note:
-     * - Modify the order of timeSlot/pos iteration to prioritize certain periods
-     * 
      * @param teacher The teacher to assign the duty to
      * @param daysInTerm List of days in the current term
      * @param term Current term number
@@ -340,10 +325,6 @@ public class DutyAssigner {
      * 2. Duty type matches what we're trying to assign (Hall vs non-Hall)
      * 3. No teacher already assigned for this day type
      * 4. Assignment won't exceed teacher's semester limit
-     * 
-     * QoL Note:
-     * - Modify the isHall check to change what counts as a Hall duty
-     * - Adjust the logging format for better debugging
      * 
      * @param teacher The teacher to assign the duty to
      * @param day The day containing the duty
