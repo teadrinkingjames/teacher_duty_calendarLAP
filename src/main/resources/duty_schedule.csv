@@ -1,16 +1,16 @@
 Term,Day,Duty,Day 1 Teachers,Day 2 Teachers
-Term 1,MONDAY,[per 1] Hall,Cochrane Wendy,Foster Marcus
-Term 1,MONDAY,[per 2] Hall,Phillips Mike,Pike Yvonne
-Term 1,MONDAY,[Lun A] Cafeteria,Baurenschmidt Rebecca,Clairmont Francois
-Term 1,MONDAY,[Lun A] Library,Bent Thomas,Daly Frederick
-Term 1,MONDAY,[Lun A] DDP Rm 209,Aristegui Mauro,Fried Brian
-Term 1,MONDAY,[Lun B] Cafeteria,Berthiaume Marie-France,Gilbert Nicolas
+Term 1,MONDAY,[per 1] Hall,Cochrane Wendy + Cochrane Wendy,Foster Marcus + Foster Marcus
+Term 1,MONDAY,[per 2] Hall,Phillips Mike + Edwards Emmanuelle,Pike Yvonne + Reid Daniel
+Term 1,MONDAY,[Lun A] Cafeteria,Baurenschmidt Rebecca + Perttula Jill,Clairmont Francois + Singor Hanife
+Term 1,MONDAY,[Lun A] Library,Bent Thomas + Pike Yvonne,Daly Frederick + Towns Heather
+Term 1,MONDAY,[Lun A] DDP Rm 209,Aristegui Mauro + Robbins Athena,Fried Brian
+Term 1,MONDAY,[Lun B] Cafeteria,Berthiaume Marie-France + Steele Ashley,Gilbert Nicolas
 Term 1,MONDAY,[Lun B] Library,Cambow Upjeet,Gordon Adam
 Term 1,MONDAY,[per 3] Hall,Loughrey Robyn,Markov Svetlana
-Term 1,MONDAY,[per 3] Library,Dewan Alanna,Graham Connor
-Term 1,MONDAY,[per 4] Hall,Needham Barry,Pike Yvonne
-Term 1,MONDAY,[per 4] Library,Aristegui Mauro,Baurenschmidt Rebecca
-Term 1,TUESDAY,[per 1] Hall,Goodman Amy,Jansen van Doorn Anneke
+Term 1,MONDAY,[per 3] Library,Dewan Alanna + Southam Gordon,Graham Connor + Vaughan Bryan
+Term 1,MONDAY,[per 4] Hall,Needham Barry + Steep Taylor,Pike Yvonne + Webster Laura
+Term 1,MONDAY,[per 4] Library,Aristegui Mauro + Baurenschmidt Rebecca,Baurenschmidt Rebecca + Bent Thomas
+Term 1,TUESDAY,[per 1] Hall,Goodman Amy + Goodman Amy,Jansen van Doorn Anneke + Jansen van Doorn Anneke
 Term 1,TUESDAY,[per 2] Hall,Reid Daniel,Sinclair Matthew
 Term 1,TUESDAY,[Lun A] Cafeteria,Edwards Emmanuelle,Forrest Tunde
 Term 1,TUESDAY,[Lun A] Library,Forbes Joanna,Gyepi-Garbrah Marrion
@@ -20,8 +20,8 @@ Term 1,TUESDAY,[Lun B] Library,Hughes Scott,Markov Svetlana
 Term 1,TUESDAY,[per 3] Hall,McComb Siobhan,McCutcheon Darcelle
 Term 1,TUESDAY,[per 3] Library,Grinnell Deborah,Gyepi-Garbrah Marrion
 Term 1,TUESDAY,[per 4] Hall,Royer Tina,Southam Gordon
-Term 1,TUESDAY,[per 4] Library,Bent Thomas,Berthiaume Marie-France
-Term 1,WEDNESDAY,[per 1] Hall,Jaremy Jessica,Kachi Masato
+Term 1,TUESDAY,[per 4] Library,Bent Thomas + Berthiaume Marie-France,Berthiaume Marie-France + Clairmont Francois
+Term 1,WEDNESDAY,[per 1] Hall,Jaremy Jessica + Jaremy Jessica,Kachi Masato + Kachi Masato
 Term 1,WEDNESDAY,[per 2] Hall,Singor Hanife,Towns Heather
 Term 1,WEDNESDAY,[Lun A] Cafeteria,Handley Rachel,Hobson Ian
 Term 1,WEDNESDAY,[Lun A] Library,Hedley Mark,Jung Victor
@@ -31,8 +31,8 @@ Term 1,WEDNESDAY,[Lun B] Library,Morse Heather,Pannell Barrett Susan
 Term 1,WEDNESDAY,[per 3] Hall,Morse Heather,Nasui Cristina
 Term 1,WEDNESDAY,[per 3] Library,Hoover Gabrielle,Laide Kathleen
 Term 1,WEDNESDAY,[per 4] Hall,Steep Taylor,Vaughan Bryan
-Term 1,WEDNESDAY,[per 4] Library,Clairmont Francois,Cochrane Wendy
-Term 1,THURSDAY,[per 1] Hall,Lewkowicz-Lalonde Zuri,Mak-Fan Christine
+Term 1,WEDNESDAY,[per 4] Library,Clairmont Francois + Daly Frederick,Cochrane Wendy + Forbes Joanna
+Term 1,THURSDAY,[per 1] Hall,Lewkowicz-Lalonde Zuri + Lewkowicz-Lalonde Zuri,Mak-Fan Christine + Mak-Fan Christine
 Term 1,THURSDAY,[per 2] Hall,Baurenschmidt Rebecca,Bent Thomas
 Term 1,THURSDAY,[Lun A] Cafeteria,Lonhienne Caroline,Perttula Jill
 Term 1,THURSDAY,[Lun A] Library,Marshall Patrick,Phillips Mike
@@ -42,8 +42,8 @@ Term 1,THURSDAY,[Lun B] Library,Sponder Andre,Watts Jason
 Term 1,THURSDAY,[per 3] Hall,Overwijk Alexander,Pannell Barrett Susan
 Term 1,THURSDAY,[per 3] Library,McIntyre Jessica,Needham Barry
 Term 1,THURSDAY,[per 4] Hall,Webster Laura,Dewan Alanna
-Term 1,THURSDAY,[per 4] Library,Daly Frederick,Forrest Tunde
-Term 1,FRIDAY,[per 1] Hall,McOnie Gavin,Moore Tara
+Term 1,THURSDAY,[per 4] Library,Daly Frederick + Forrest Tunde,Forrest Tunde + Fried Brian
+Term 1,FRIDAY,[per 1] Hall,McOnie Gavin + McOnie Gavin,Moore Tara + Moore Tara
 Term 1,FRIDAY,[per 2] Hall,Clairmont Francois,Daly Frederick
 Term 1,FRIDAY,[Lun A] Cafeteria,Pike Yvonne,Sinclair Matthew
 Term 1,FRIDAY,[Lun A] Library,Reid Daniel,Singor Hanife
@@ -53,19 +53,19 @@ Term 1,FRIDAY,[Lun B] Library,Berthiaume Marie-France,Gilbert Nicolas
 Term 1,FRIDAY,[per 3] Hall,Papaz Gabriela,Robbins Athena
 Term 1,FRIDAY,[per 3] Library,Pike Yvonne,Royer Tina
 Term 1,FRIDAY,[per 4] Hall,Graham Connor,Grinnell Deborah
-Term 1,FRIDAY,[per 4] Library,Foster Marcus,Fried Brian
-Term 2,MONDAY,[per 1] Hall,Cochrane Wendy,Foster Marcus
-Term 2,MONDAY,[per 2] Hall,Phillips Mike,Pike Yvonne
-Term 2,MONDAY,[Lun A] Cafeteria,Baurenschmidt Rebecca,Clairmont Francois
-Term 2,MONDAY,[Lun A] Library,Bent Thomas,Daly Frederick
-Term 2,MONDAY,[Lun A] DDP Rm 209,Aristegui Mauro,Fried Brian
-Term 2,MONDAY,[Lun B] Cafeteria,Berthiaume Marie-France,Gilbert Nicolas
+Term 1,FRIDAY,[per 4] Library,Foster Marcus + Hedley Mark,Fried Brian + Hobson Ian
+Term 2,MONDAY,[per 1] Hall,Cochrane Wendy + Cochrane Wendy,Foster Marcus + Foster Marcus
+Term 2,MONDAY,[per 2] Hall,Phillips Mike + Edwards Emmanuelle,Pike Yvonne + Reid Daniel
+Term 2,MONDAY,[Lun A] Cafeteria,Baurenschmidt Rebecca + Perttula Jill,Clairmont Francois + Singor Hanife
+Term 2,MONDAY,[Lun A] Library,Bent Thomas + Pike Yvonne,Daly Frederick + Towns Heather
+Term 2,MONDAY,[Lun A] DDP Rm 209,Aristegui Mauro + Robbins Athena,Fried Brian
+Term 2,MONDAY,[Lun B] Cafeteria,Berthiaume Marie-France + Steele Ashley,Gilbert Nicolas
 Term 2,MONDAY,[Lun B] Library,Cambow Upjeet,Gordon Adam
 Term 2,MONDAY,[per 3] Hall,Loughrey Robyn,Markov Svetlana
-Term 2,MONDAY,[per 3] Library,Dewan Alanna,Graham Connor
-Term 2,MONDAY,[per 4] Hall,Needham Barry,Pike Yvonne
-Term 2,MONDAY,[per 4] Library,Aristegui Mauro,Baurenschmidt Rebecca
-Term 2,TUESDAY,[per 1] Hall,Goodman Amy,Jansen van Doorn Anneke
+Term 2,MONDAY,[per 3] Library,Dewan Alanna + Southam Gordon,Graham Connor + Vaughan Bryan
+Term 2,MONDAY,[per 4] Hall,Needham Barry + Steep Taylor,Pike Yvonne + Webster Laura
+Term 2,MONDAY,[per 4] Library,Aristegui Mauro + Baurenschmidt Rebecca,Baurenschmidt Rebecca + Bent Thomas
+Term 2,TUESDAY,[per 1] Hall,Goodman Amy + Goodman Amy,Jansen van Doorn Anneke + Jansen van Doorn Anneke
 Term 2,TUESDAY,[per 2] Hall,Reid Daniel,Sinclair Matthew
 Term 2,TUESDAY,[Lun A] Cafeteria,Edwards Emmanuelle,Forrest Tunde
 Term 2,TUESDAY,[Lun A] Library,Forbes Joanna,Gyepi-Garbrah Marrion
@@ -75,8 +75,8 @@ Term 2,TUESDAY,[Lun B] Library,Hughes Scott,Markov Svetlana
 Term 2,TUESDAY,[per 3] Hall,McComb Siobhan,McCutcheon Darcelle
 Term 2,TUESDAY,[per 3] Library,Grinnell Deborah,Gyepi-Garbrah Marrion
 Term 2,TUESDAY,[per 4] Hall,Royer Tina,Southam Gordon
-Term 2,TUESDAY,[per 4] Library,Bent Thomas,Berthiaume Marie-France
-Term 2,WEDNESDAY,[per 1] Hall,Jaremy Jessica,Kachi Masato
+Term 2,TUESDAY,[per 4] Library,Bent Thomas + Berthiaume Marie-France,Berthiaume Marie-France + Clairmont Francois
+Term 2,WEDNESDAY,[per 1] Hall,Jaremy Jessica + Jaremy Jessica,Kachi Masato + Kachi Masato
 Term 2,WEDNESDAY,[per 2] Hall,Singor Hanife,Towns Heather
 Term 2,WEDNESDAY,[Lun A] Cafeteria,Handley Rachel,Hobson Ian
 Term 2,WEDNESDAY,[Lun A] Library,Hedley Mark,Jung Victor
@@ -86,8 +86,8 @@ Term 2,WEDNESDAY,[Lun B] Library,Morse Heather,Pannell Barrett Susan
 Term 2,WEDNESDAY,[per 3] Hall,Morse Heather,Nasui Cristina
 Term 2,WEDNESDAY,[per 3] Library,Hoover Gabrielle,Laide Kathleen
 Term 2,WEDNESDAY,[per 4] Hall,Steep Taylor,Vaughan Bryan
-Term 2,WEDNESDAY,[per 4] Library,Clairmont Francois,Cochrane Wendy
-Term 2,THURSDAY,[per 1] Hall,Lewkowicz-Lalonde Zuri,Mak-Fan Christine
+Term 2,WEDNESDAY,[per 4] Library,Clairmont Francois + Daly Frederick,Cochrane Wendy + Forbes Joanna
+Term 2,THURSDAY,[per 1] Hall,Lewkowicz-Lalonde Zuri + Lewkowicz-Lalonde Zuri,Mak-Fan Christine + Mak-Fan Christine
 Term 2,THURSDAY,[per 2] Hall,Baurenschmidt Rebecca,Bent Thomas
 Term 2,THURSDAY,[Lun A] Cafeteria,Lonhienne Caroline,Perttula Jill
 Term 2,THURSDAY,[Lun A] Library,Marshall Patrick,Phillips Mike
@@ -97,8 +97,8 @@ Term 2,THURSDAY,[Lun B] Library,Sponder Andre,Watts Jason
 Term 2,THURSDAY,[per 3] Hall,Overwijk Alexander,Pannell Barrett Susan
 Term 2,THURSDAY,[per 3] Library,McIntyre Jessica,Needham Barry
 Term 2,THURSDAY,[per 4] Hall,Webster Laura,Dewan Alanna
-Term 2,THURSDAY,[per 4] Library,Daly Frederick,Forrest Tunde
-Term 2,FRIDAY,[per 1] Hall,McOnie Gavin,Moore Tara
+Term 2,THURSDAY,[per 4] Library,Daly Frederick + Forrest Tunde,Forrest Tunde + Fried Brian
+Term 2,FRIDAY,[per 1] Hall,McOnie Gavin + McOnie Gavin,Moore Tara + Moore Tara
 Term 2,FRIDAY,[per 2] Hall,Clairmont Francois,Daly Frederick
 Term 2,FRIDAY,[Lun A] Cafeteria,Pike Yvonne,Sinclair Matthew
 Term 2,FRIDAY,[Lun A] Library,Reid Daniel,Singor Hanife
@@ -108,19 +108,19 @@ Term 2,FRIDAY,[Lun B] Library,Berthiaume Marie-France,Gilbert Nicolas
 Term 2,FRIDAY,[per 3] Hall,Papaz Gabriela,Robbins Athena
 Term 2,FRIDAY,[per 3] Library,Pike Yvonne,Royer Tina
 Term 2,FRIDAY,[per 4] Hall,Graham Connor,Grinnell Deborah
-Term 2,FRIDAY,[per 4] Library,Foster Marcus,Fried Brian
-Term 3,MONDAY,[per 1] Hall,Cochrane Wendy,Foster Marcus
-Term 3,MONDAY,[per 2] Hall,Phillips Mike,Pike Yvonne
-Term 3,MONDAY,[Lun A] Cafeteria,Baurenschmidt Rebecca,Clairmont Francois
-Term 3,MONDAY,[Lun A] Library,Bent Thomas,Daly Frederick
-Term 3,MONDAY,[Lun A] DDP Rm 209,Aristegui Mauro,Fried Brian
-Term 3,MONDAY,[Lun B] Cafeteria,Berthiaume Marie-France,Gilbert Nicolas
+Term 2,FRIDAY,[per 4] Library,Foster Marcus + Hedley Mark,Fried Brian + Hobson Ian
+Term 3,MONDAY,[per 1] Hall,Cochrane Wendy + Cochrane Wendy,Foster Marcus + Foster Marcus
+Term 3,MONDAY,[per 2] Hall,Phillips Mike + Edwards Emmanuelle,Pike Yvonne + Reid Daniel
+Term 3,MONDAY,[Lun A] Cafeteria,Baurenschmidt Rebecca + Perttula Jill,Clairmont Francois + Singor Hanife
+Term 3,MONDAY,[Lun A] Library,Bent Thomas + Pike Yvonne,Daly Frederick + Towns Heather
+Term 3,MONDAY,[Lun A] DDP Rm 209,Aristegui Mauro + Robbins Athena,Fried Brian
+Term 3,MONDAY,[Lun B] Cafeteria,Berthiaume Marie-France + Steele Ashley,Gilbert Nicolas
 Term 3,MONDAY,[Lun B] Library,Cambow Upjeet,Gordon Adam
 Term 3,MONDAY,[per 3] Hall,Loughrey Robyn,Markov Svetlana
-Term 3,MONDAY,[per 3] Library,Dewan Alanna,Graham Connor
-Term 3,MONDAY,[per 4] Hall,Needham Barry,Pike Yvonne
-Term 3,MONDAY,[per 4] Library,Aristegui Mauro,Baurenschmidt Rebecca
-Term 3,TUESDAY,[per 1] Hall,Goodman Amy,Jansen van Doorn Anneke
+Term 3,MONDAY,[per 3] Library,Dewan Alanna + Southam Gordon,Graham Connor + Vaughan Bryan
+Term 3,MONDAY,[per 4] Hall,Needham Barry + Steep Taylor,Pike Yvonne + Webster Laura
+Term 3,MONDAY,[per 4] Library,Aristegui Mauro + Baurenschmidt Rebecca,Baurenschmidt Rebecca + Bent Thomas
+Term 3,TUESDAY,[per 1] Hall,Goodman Amy + Goodman Amy,Jansen van Doorn Anneke + Jansen van Doorn Anneke
 Term 3,TUESDAY,[per 2] Hall,Reid Daniel,Sinclair Matthew
 Term 3,TUESDAY,[Lun A] Cafeteria,Edwards Emmanuelle,Forrest Tunde
 Term 3,TUESDAY,[Lun A] Library,Forbes Joanna,Gyepi-Garbrah Marrion
@@ -130,8 +130,8 @@ Term 3,TUESDAY,[Lun B] Library,Hughes Scott,Markov Svetlana
 Term 3,TUESDAY,[per 3] Hall,McComb Siobhan,McCutcheon Darcelle
 Term 3,TUESDAY,[per 3] Library,Grinnell Deborah,Gyepi-Garbrah Marrion
 Term 3,TUESDAY,[per 4] Hall,Royer Tina,Southam Gordon
-Term 3,TUESDAY,[per 4] Library,Bent Thomas,Berthiaume Marie-France
-Term 3,WEDNESDAY,[per 1] Hall,Jaremy Jessica,Kachi Masato
+Term 3,TUESDAY,[per 4] Library,Bent Thomas + Berthiaume Marie-France,Berthiaume Marie-France + Clairmont Francois
+Term 3,WEDNESDAY,[per 1] Hall,Jaremy Jessica + Jaremy Jessica,Kachi Masato + Kachi Masato
 Term 3,WEDNESDAY,[per 2] Hall,Singor Hanife,Towns Heather
 Term 3,WEDNESDAY,[Lun A] Cafeteria,Handley Rachel,Hobson Ian
 Term 3,WEDNESDAY,[Lun A] Library,Hedley Mark,Jung Victor
@@ -141,8 +141,8 @@ Term 3,WEDNESDAY,[Lun B] Library,Morse Heather,Pannell Barrett Susan
 Term 3,WEDNESDAY,[per 3] Hall,Morse Heather,Nasui Cristina
 Term 3,WEDNESDAY,[per 3] Library,Hoover Gabrielle,Laide Kathleen
 Term 3,WEDNESDAY,[per 4] Hall,Steep Taylor,Vaughan Bryan
-Term 3,WEDNESDAY,[per 4] Library,Clairmont Francois,Cochrane Wendy
-Term 3,THURSDAY,[per 1] Hall,Lewkowicz-Lalonde Zuri,Mak-Fan Christine
+Term 3,WEDNESDAY,[per 4] Library,Clairmont Francois + Daly Frederick,Cochrane Wendy + Forbes Joanna
+Term 3,THURSDAY,[per 1] Hall,Lewkowicz-Lalonde Zuri + Lewkowicz-Lalonde Zuri,Mak-Fan Christine + Mak-Fan Christine
 Term 3,THURSDAY,[per 2] Hall,Baurenschmidt Rebecca,Bent Thomas
 Term 3,THURSDAY,[Lun A] Cafeteria,Lonhienne Caroline,Perttula Jill
 Term 3,THURSDAY,[Lun A] Library,Marshall Patrick,Phillips Mike
@@ -152,8 +152,8 @@ Term 3,THURSDAY,[Lun B] Library,Sponder Andre,Watts Jason
 Term 3,THURSDAY,[per 3] Hall,Overwijk Alexander,Pannell Barrett Susan
 Term 3,THURSDAY,[per 3] Library,McIntyre Jessica,Needham Barry
 Term 3,THURSDAY,[per 4] Hall,Webster Laura,Dewan Alanna
-Term 3,THURSDAY,[per 4] Library,Daly Frederick,Forrest Tunde
-Term 3,FRIDAY,[per 1] Hall,McOnie Gavin,Moore Tara
+Term 3,THURSDAY,[per 4] Library,Daly Frederick + Forrest Tunde,Forrest Tunde + Fried Brian
+Term 3,FRIDAY,[per 1] Hall,McOnie Gavin + McOnie Gavin,Moore Tara + Moore Tara
 Term 3,FRIDAY,[per 2] Hall,Clairmont Francois,Daly Frederick
 Term 3,FRIDAY,[Lun A] Cafeteria,Pike Yvonne,Sinclair Matthew
 Term 3,FRIDAY,[Lun A] Library,Reid Daniel,Singor Hanife
@@ -163,19 +163,19 @@ Term 3,FRIDAY,[Lun B] Library,Berthiaume Marie-France,Gilbert Nicolas
 Term 3,FRIDAY,[per 3] Hall,Papaz Gabriela,Robbins Athena
 Term 3,FRIDAY,[per 3] Library,Pike Yvonne,Royer Tina
 Term 3,FRIDAY,[per 4] Hall,Graham Connor,Grinnell Deborah
-Term 3,FRIDAY,[per 4] Library,Foster Marcus,Fried Brian
-Term 4,MONDAY,[per 1] Hall,Cochrane Wendy,Foster Marcus
-Term 4,MONDAY,[per 2] Hall,Phillips Mike,Pike Yvonne
-Term 4,MONDAY,[Lun A] Cafeteria,Baurenschmidt Rebecca,Clairmont Francois
-Term 4,MONDAY,[Lun A] Library,Bent Thomas,Daly Frederick
-Term 4,MONDAY,[Lun A] DDP Rm 209,Aristegui Mauro,Fried Brian
-Term 4,MONDAY,[Lun B] Cafeteria,Berthiaume Marie-France,Gilbert Nicolas
+Term 3,FRIDAY,[per 4] Library,Foster Marcus + Hedley Mark,Fried Brian + Hobson Ian
+Term 4,MONDAY,[per 1] Hall,Cochrane Wendy + Cochrane Wendy,Foster Marcus + Foster Marcus
+Term 4,MONDAY,[per 2] Hall,Phillips Mike + Edwards Emmanuelle,Pike Yvonne + Reid Daniel
+Term 4,MONDAY,[Lun A] Cafeteria,Baurenschmidt Rebecca + Perttula Jill,Clairmont Francois + Singor Hanife
+Term 4,MONDAY,[Lun A] Library,Bent Thomas + Pike Yvonne,Daly Frederick + Towns Heather
+Term 4,MONDAY,[Lun A] DDP Rm 209,Aristegui Mauro + Robbins Athena,Fried Brian
+Term 4,MONDAY,[Lun B] Cafeteria,Berthiaume Marie-France + Steele Ashley,Gilbert Nicolas
 Term 4,MONDAY,[Lun B] Library,Cambow Upjeet,Gordon Adam
 Term 4,MONDAY,[per 3] Hall,Loughrey Robyn,Markov Svetlana
-Term 4,MONDAY,[per 3] Library,Dewan Alanna,Graham Connor
-Term 4,MONDAY,[per 4] Hall,Needham Barry,Pike Yvonne
-Term 4,MONDAY,[per 4] Library,Aristegui Mauro,Baurenschmidt Rebecca
-Term 4,TUESDAY,[per 1] Hall,Goodman Amy,Jansen van Doorn Anneke
+Term 4,MONDAY,[per 3] Library,Dewan Alanna + Southam Gordon,Graham Connor + Vaughan Bryan
+Term 4,MONDAY,[per 4] Hall,Needham Barry + Steep Taylor,Pike Yvonne + Webster Laura
+Term 4,MONDAY,[per 4] Library,Aristegui Mauro + Baurenschmidt Rebecca,Baurenschmidt Rebecca + Bent Thomas
+Term 4,TUESDAY,[per 1] Hall,Goodman Amy + Goodman Amy,Jansen van Doorn Anneke + Jansen van Doorn Anneke
 Term 4,TUESDAY,[per 2] Hall,Reid Daniel,Sinclair Matthew
 Term 4,TUESDAY,[Lun A] Cafeteria,Edwards Emmanuelle,Forrest Tunde
 Term 4,TUESDAY,[Lun A] Library,Forbes Joanna,Gyepi-Garbrah Marrion
@@ -185,8 +185,8 @@ Term 4,TUESDAY,[Lun B] Library,Hughes Scott,Markov Svetlana
 Term 4,TUESDAY,[per 3] Hall,McComb Siobhan,McCutcheon Darcelle
 Term 4,TUESDAY,[per 3] Library,Grinnell Deborah,Gyepi-Garbrah Marrion
 Term 4,TUESDAY,[per 4] Hall,Royer Tina,Southam Gordon
-Term 4,TUESDAY,[per 4] Library,Bent Thomas,Berthiaume Marie-France
-Term 4,WEDNESDAY,[per 1] Hall,Jaremy Jessica,Kachi Masato
+Term 4,TUESDAY,[per 4] Library,Bent Thomas + Berthiaume Marie-France,Berthiaume Marie-France + Clairmont Francois
+Term 4,WEDNESDAY,[per 1] Hall,Jaremy Jessica + Jaremy Jessica,Kachi Masato + Kachi Masato
 Term 4,WEDNESDAY,[per 2] Hall,Singor Hanife,Towns Heather
 Term 4,WEDNESDAY,[Lun A] Cafeteria,Handley Rachel,Hobson Ian
 Term 4,WEDNESDAY,[Lun A] Library,Hedley Mark,Jung Victor
@@ -196,8 +196,8 @@ Term 4,WEDNESDAY,[Lun B] Library,Morse Heather,Pannell Barrett Susan
 Term 4,WEDNESDAY,[per 3] Hall,Morse Heather,Nasui Cristina
 Term 4,WEDNESDAY,[per 3] Library,Hoover Gabrielle,Laide Kathleen
 Term 4,WEDNESDAY,[per 4] Hall,Steep Taylor,Vaughan Bryan
-Term 4,WEDNESDAY,[per 4] Library,Clairmont Francois,Cochrane Wendy
-Term 4,THURSDAY,[per 1] Hall,Lewkowicz-Lalonde Zuri,Mak-Fan Christine
+Term 4,WEDNESDAY,[per 4] Library,Clairmont Francois + Daly Frederick,Cochrane Wendy + Forbes Joanna
+Term 4,THURSDAY,[per 1] Hall,Lewkowicz-Lalonde Zuri + Lewkowicz-Lalonde Zuri,Mak-Fan Christine + Mak-Fan Christine
 Term 4,THURSDAY,[per 2] Hall,Baurenschmidt Rebecca,Bent Thomas
 Term 4,THURSDAY,[Lun A] Cafeteria,Lonhienne Caroline,Perttula Jill
 Term 4,THURSDAY,[Lun A] Library,Marshall Patrick,Phillips Mike
@@ -207,8 +207,8 @@ Term 4,THURSDAY,[Lun B] Library,Sponder Andre,Watts Jason
 Term 4,THURSDAY,[per 3] Hall,Overwijk Alexander,Pannell Barrett Susan
 Term 4,THURSDAY,[per 3] Library,McIntyre Jessica,Needham Barry
 Term 4,THURSDAY,[per 4] Hall,Webster Laura,Dewan Alanna
-Term 4,THURSDAY,[per 4] Library,Daly Frederick,Forrest Tunde
-Term 4,FRIDAY,[per 1] Hall,McOnie Gavin,Moore Tara
+Term 4,THURSDAY,[per 4] Library,Daly Frederick + Forrest Tunde,Forrest Tunde + Fried Brian
+Term 4,FRIDAY,[per 1] Hall,McOnie Gavin + McOnie Gavin,Moore Tara + Moore Tara
 Term 4,FRIDAY,[per 2] Hall,Clairmont Francois,Daly Frederick
 Term 4,FRIDAY,[Lun A] Cafeteria,Pike Yvonne,Sinclair Matthew
 Term 4,FRIDAY,[Lun A] Library,Reid Daniel,Singor Hanife
@@ -218,4 +218,4 @@ Term 4,FRIDAY,[Lun B] Library,Berthiaume Marie-France,Gilbert Nicolas
 Term 4,FRIDAY,[per 3] Hall,Papaz Gabriela,Robbins Athena
 Term 4,FRIDAY,[per 3] Library,Pike Yvonne,Royer Tina
 Term 4,FRIDAY,[per 4] Hall,Graham Connor,Grinnell Deborah
-Term 4,FRIDAY,[per 4] Library,Foster Marcus,Fried Brian
+Term 4,FRIDAY,[per 4] Library,Foster Marcus + Hedley Mark,Fried Brian + Hobson Ian

@@ -112,6 +112,9 @@ public class DayEditor extends JDialog {
         setLocationRelativeTo(parent);
     }
     
+    /**
+     * Updates the day object
+     */
     private void updateDay() {
         String selectedDate = (String) daySearch.getSelectedItem();
         LocalDate date = LocalDate.parse(selectedDate, 
@@ -127,6 +130,10 @@ public class DayEditor extends JDialog {
         pack();
     }
     
+    /**
+     * Styles the button
+     * @param button the button to style
+     */
     private void styleButton(JButton button) {
         button.setBackground(Color.WHITE);
         button.setForeground(Color.BLACK);
@@ -136,6 +143,9 @@ public class DayEditor extends JDialog {
         button.setOpaque(true);
     }
     
+    /**
+     * Updates the form
+     */
     private void updateForm() {
         formPanel.removeAll();
         
@@ -227,6 +237,12 @@ public class DayEditor extends JDialog {
         formPanel.repaint();
     }
     
+    /**
+     * Creates a new row for the form
+     * @param label the label for the row
+     * @param component the component to add to the row
+     * @return the new row
+     */
     private JPanel createRow(String label, JComponent component) {
         JPanel row = new JPanel(new FlowLayout(FlowLayout.LEFT, FLOW_LAYOUT_GAP, FLOW_LAYOUT_V_GAP));
         JLabel jLabel = new JLabel(label);
@@ -236,6 +252,12 @@ public class DayEditor extends JDialog {
         return row;
     }
     
+    /**
+     * Creates a new labeled field for the form
+     * @param label the label for the field
+     * @param field the field to add to the panel
+     * @return the new panel
+     */
     private JPanel createLabeledField(String label, JComponent field) {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT, FLOW_LAYOUT_V_GAP, 0));
         panel.add(new JLabel(label));

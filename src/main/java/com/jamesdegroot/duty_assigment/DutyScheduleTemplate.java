@@ -23,12 +23,6 @@ import java.util.Map;
 */
 
 public class DutyScheduleTemplate {
-    // Constants for terms
-    public static final int TERM_1 = 0;  // Fall Term 1 //TODO: this is a weird way of doing this
-    public static final int TERM_2 = 1;  // Fall Term 2
-    public static final int TERM_3 = 2;  // Spring Term 1
-    public static final int TERM_4 = 3;  // Spring Term 2
-    
     // Store duty schedules for each day of the week
     private final Map<DayOfWeek, Day[]> weeklySchedule;
     private final int termNumber;
@@ -39,6 +33,9 @@ public class DutyScheduleTemplate {
         initializeWeeklySchedule();
     }
     
+    /**
+     * Initializes the weekly schedule for each day of the week
+     */
     private void initializeWeeklySchedule() {
         // Initialize a template for each weekday
         for (DayOfWeek day : DayOfWeek.values()) {
@@ -52,22 +49,42 @@ public class DutyScheduleTemplate {
         }
     }
     
+    /**
+     * Gets the day template for a specific day of the week
+     * 
+     * @param dayOfWeek The day of the week
+     * @return The day template for the given day of the week
+     */
     public Day[] getDayTemplate(DayOfWeek dayOfWeek) {
         return weeklySchedule.get(dayOfWeek);
     }
     
+    /**
+     * Sets the day template for a specific day of the week
+     * 
+     * @param dayOfWeek The day of the week
+     * @param rotationDays The day template for the given day of the week
+     */
     public void setDayTemplate(DayOfWeek dayOfWeek, Day[] rotationDays) {
         if (rotationDays.length == 2) {
             weeklySchedule.put(dayOfWeek, rotationDays);
         }
     }
     
+    /**
+     * Gets the term number for the duty schedule template
+     * 
+     * @return The term number for the duty schedule template
+     */
     public int getTermNumber() {
         return termNumber;
     }
     
     /**
      * Copies duties from a template day to a target day
+     * 
+     * @param targetDay The target day to copy the duties to
+     * @param isDay1 Whether the day is Day 1
      */
     public void applyTemplate(Day targetDay, boolean isDay1) {
         DayOfWeek dayOfWeek = targetDay.getDate().getDayOfWeek();

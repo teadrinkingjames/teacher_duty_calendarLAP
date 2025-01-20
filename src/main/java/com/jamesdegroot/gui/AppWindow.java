@@ -496,6 +496,10 @@ public class AppWindow {
         System.out.println("=".repeat(GenerateDutyCalendar.NUM_OF_SEPERATORS_CHAR));
     }
 
+    /**
+     * Styles the button
+     * @param button the button to style
+     */
     private void styleButton(JButton button) {
         button.setBackground(Color.WHITE);
         button.setForeground(Color.BLACK);

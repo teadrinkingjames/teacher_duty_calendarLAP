@@ -10,6 +10,9 @@ import com.jamesdegroot.GenerateDutyCalendar;
  * Purpose: 
  *    Utility class for loading test data files (calendar and teacher data)
  *    from the resources directory for testing and development purposes.
+ *  
+ * Methods:
+ * 	  - loadTestData, void, loads the test data
  */
 public class TestDataLoader {
     
@@ -18,7 +21,7 @@ public class TestDataLoader {
      */
     public static void loadTestData(GenerateDutyCalendar appLogic) {
         try {
-            // Get resource URLs
+            // Get resource URLs from within the resources folder
             java.net.URL calendarUrl = TestDataLoader.class.getClassLoader()
                 .getResource("ICalendarHandler.ics");
             java.net.URL teacherUrl = TestDataLoader.class.getClassLoader()

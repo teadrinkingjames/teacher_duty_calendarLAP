@@ -1,8 +1,8 @@
 package com.jamesdegroot;
 
 import com.jamesdegroot.gui.AppWindow;
-import com.jamesdegroot.duty_assigment.DutyAssigner;
-
+import com.jamesdegroot.io.TestDataLoader;
+@SuppressWarnings("unused") // commented out method is tested in io/TestDataLoader.java
 /**
  * Main.java
  * Name: James de Groot
@@ -13,8 +13,8 @@ import com.jamesdegroot.duty_assigment.DutyAssigner;
  *      
  *  Methods:
  * 	  - main, void, starts the application
- * 
 */
+
 
 public class Main {
     /**
@@ -25,8 +25,8 @@ public class Main {
         GenerateDutyCalendar appLogic = new GenerateDutyCalendar();
         AppWindow window = new AppWindow(appLogic);
         
-        // Load test data automatically
-        DutyAssigner.loadTestData(appLogic);
+        // Load test data automatically, must be in src/main/resources with the correct file names found in io/TestDataLoader.java
+        //TestDataLoader.loadTestData(appLogic);
         
         window.show();
     }

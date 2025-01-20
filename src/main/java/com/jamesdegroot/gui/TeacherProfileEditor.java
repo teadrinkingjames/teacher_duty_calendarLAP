@@ -117,7 +117,10 @@ public class TeacherProfileEditor extends JDialog {
         pack();
         setLocationRelativeTo(parent);
     }
-    
+
+    /**
+     * Updates the teacher object
+     */
     private void updateTeacher() {
         String selectedName = (String) teacherSearch.getSelectedItem();
         teacher = allTeachers.stream()
@@ -130,6 +133,10 @@ public class TeacherProfileEditor extends JDialog {
         pack();
     }
     
+    /**
+     * Styles the button
+     * @param button the button to style
+     */
     private void styleButton(JButton button) {
         button.setBackground(Color.WHITE);
         button.setForeground(Color.BLACK);
@@ -139,6 +146,9 @@ public class TeacherProfileEditor extends JDialog {
         button.setOpaque(true);
     }
     
+    /**
+     * Updates the form
+     */
     private void updateForm() {
         formPanel.removeAll();
         
@@ -230,6 +240,12 @@ public class TeacherProfileEditor extends JDialog {
         formPanel.repaint();
     }
     
+    /**
+     * Creates a new row for the form
+     * @param label the label for the row
+     * @param component the component to add to the row
+     * @return the new row
+     */
     private JPanel createRow(String label, JComponent component) {
         JPanel row = new JPanel(new FlowLayout(FlowLayout.LEFT, FLOW_LAYOUT_GAP, FLOW_LAYOUT_V_GAP));
         JLabel jLabel = new JLabel(label);

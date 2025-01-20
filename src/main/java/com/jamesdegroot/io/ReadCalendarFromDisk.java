@@ -46,6 +46,10 @@ public class ReadCalendarFromDisk {
      * Processes an ICS file line by line, collecting event details until a complete
      * holiday event is found (marked by EVENT_END). Each complete event is added
      * to the calendar as a Holiday object.
+     * 
+     * @param calendar The Calendar object to populate
+     * @param file The ICS file to read
+     * @throws IOException if file reading fails (caught internally)
      */
     public static void loadCalendarFromICS(Calendar calendar, File file) {
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
@@ -85,6 +89,9 @@ public class ReadCalendarFromDisk {
     /**
      * Handles ICS date format conversion. ICS dates may contain additional characters,
      * so we clean the string before parsing (e.g., "20240115T000000Z" -> "20240115").
+     * 
+     * @param dateStr The date string in yyyyMMdd format
+     * @return LocalDate object, or null if parsing fails
      */
     private static LocalDate parseDate(String dateStr) {
         dateStr = dateStr.replaceAll("[^0-9]", "");

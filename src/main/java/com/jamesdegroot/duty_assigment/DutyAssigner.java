@@ -56,6 +56,7 @@ public class DutyAssigner {
         FRIDAY_DAY1,    FRIDAY_DAY2
     }
 
+    // Constructor
     public DutyAssigner(Calendar calendar, List<Teacher> teachers) {
         this.calendar = calendar;
         this.teachers = teachers;
@@ -77,10 +78,6 @@ public class DutyAssigner {
      *    - First assign non-Hall duties (prioritized)
      *    - Then assign Hall duties if needed to meet duty quota
      *    - Ensure balanced distribution between terms
-     * 
-     * QoL Note: To modify duty priorities or assignment rules:
-     * - Check tryAssignDutyToTeacher() for duty type filtering
-     * - Adjust assignDutiesForTeacher() for semester/term balancing
      */
     public void assignDuties() {
         System.out.println("\nAssigning duties for all terms...");
@@ -114,7 +111,7 @@ public class DutyAssigner {
         printPatternCounts();
         
         // Print the complete duty schedule
-        printDutySchedule();
+        //printDutySchedule(); // DEBUGGING, this present in generateDutyCalendar.java
         
         // Write the complete schedule to CSV
         String outputPath = "src/main/resources/duty_schedule.csv";
@@ -190,38 +187,6 @@ public class DutyAssigner {
     }
 
     /**
-     * Loads test data automatically from resource files
-     */
-    public static void loadTestData(GenerateDutyCalendar appLogic) {
-        try {
-            // Get resource URLs
-            java.net.URL calendarUrl = DutyAssigner.class.getClassLoader()
-                .getResource("ICalendarHandler.ics");
-            java.net.URL teacherUrl = DutyAssigner.class.getClassLoader()
-                .getResource("Copy Teacher Linear from 2023-2024 - Sheet1.csv");
-            
-            if (calendarUrl == null || teacherUrl == null) {
-                System.err.println("Could not find resource files");
-                return;
-            }
-            
-            // Create file objects from URLs
-            java.io.File calendarFile = new java.io.File(calendarUrl.toURI());
-            java.io.File teacherFile = new java.io.File("C:\\Users\\teadr\\git\\JAVA\\Gr12\\teacher_duty_calendarPC-master\\src\\main\\resources\\Copy Teacher Linear from 2023-2024 - Sheet1.csv");
-            
-            // Load the files using the app logic
-            appLogic.loadCalendar(calendarFile);
-            appLogic.processFile(teacherFile);
-            
-            System.out.println("Test data loaded successfully");
-            
-        } catch (Exception e) {
-            System.err.println("Error loading test data: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
-
-    /**
      * Assigns duties to a single teacher across both semesters.
      * 
      * Process per semester:
@@ -238,7 +203,8 @@ public class DutyAssigner {
             return;
         }
         
-        System.out.println("Teacher: " + teacher.getName());
+        // DEBUGGING, prints the teacher name, if they are being assigned duties
+        //System.out.println("Teacher: " + teacher.getName());
         List<String> classSchedule = teacher.getSchedule();
         
         for (int semester = 0; semester < 2; semester++) {
@@ -248,11 +214,14 @@ public class DutyAssigner {
             List<String> semesterClasses = semester == 0 ? 
                 classSchedule.subList(0, 5) : classSchedule.subList(5, 10);
             if (semesterClasses.equals(Arrays.asList("", "", "", "", ""))) {
-                System.out.println("Teacher " + teacher.getName() + " has no classes in semester " + (semester+1));
+                
+                // DEBUGGING, prints the teacher name, if they have no classes in the semester
+                //System.out.println("Teacher " + teacher.getName() + " has no classes in semester " + (semester+1));
                 continue;
             }
             
-            System.out.println("Teacher " + teacher.getName() + " has classes in semester " + (semester+1));
+            // DEBUGGING, prints the teacher name, if they have classes in the semester 
+            //System.out.println("Teacher " + teacher.getName() + " has classes in semester " + (semester+1));
             int numberOfDutiesNeeded = teacher.getMaxDutiesPerSemester();
             
             List<List<Day>> termDays = getTermDaysForSemester(semester);
@@ -381,19 +350,17 @@ public class DutyAssigner {
             } else {
                 duty.addDay2Teacher(teacher.getName());
             }
-            
-            String dutyType = isHallDuty ? "hall duty" : "duty";
-            System.out.println("Assigned " + dutyType + ": " + duty.getName() + " to teacher: " + teacher.getName() +
-                " (worth " + patternCount + " duties, total now: " + teacher.getDutiesThisSemester() + 
-                ", Day " + (day.isDay1() ? "1" : "2") + ")");
+            // DEBUGGING, prints the duty assignment
+            // String dutyType = isHallDuty ? "hall duty" : "duty";
+            // System.out.println("Assigned " + dutyType + ": " + duty.getName() + " to teacher: " + teacher.getName() +
+            //     " (worth " + patternCount + " duties, total now: " + teacher.getDutiesThisSemester() + 
+            //     ", Day " + (day.isDay1() ? "1" : "2") + ")");
             
             return true;
         }
         
         return false;
     }
-
-    // ===== Pattern and Term Management Methods =====
 
     /**
      * Initializes the term pattern groups data structure.
@@ -402,9 +369,7 @@ public class DutyAssigner {
      * Structure:
      * termPatternGroups[term][pattern] = List of days matching that pattern
      * 
-     * QoL Note:
-     * - Modify the grouping logic here to change how days are organized
-     * - Add additional filtering criteria if needed
+     * @param schoolDays List of all school days
      */
     private void initializeTermPatternGroups(List<Day> schoolDays) {
         termPatternGroups = new ArrayList<>();
@@ -424,8 +389,8 @@ public class DutyAssigner {
      * - Index 0: First term of semester
      * - Index 1: Second term of semester
      * 
-     * QoL Note:
-     * - Modify to change how terms are grouped or ordered
+     * @param semester The semester to get the days for
+     * @return List of days for each term in the semester
      */
     private List<List<Day>> getTermDaysForSemester(int semester) {
         List<List<Day>> termDays = new ArrayList<>();
@@ -446,15 +411,11 @@ public class DutyAssigner {
         return daysInTerm;
     }
 
-    // ===== Utility Methods =====
-
     /**
      * Gets all school days from the calendar.
      * Filters out weekends and holidays.
      * 
-     * QoL Note:
-     * - Add additional filtering here if needed
-     * - Modify to change what counts as a school day
+     * @return List of all school days
      */
     private List<Day> getSchoolDays() {
         return calendar.getDaysOfYear().stream()
@@ -462,6 +423,14 @@ public class DutyAssigner {
             .toList();
     }
 
+    /**
+     * Adds days to a list based on the pattern and term
+     * 
+     * @param term The term to get the days for
+     * @param dayOfWeek The day of the week
+     * @param isDay1 Whether the day is Day 1
+     * @param daysInTerm The list of days to add to
+     */
     private void addPatternDaysToList(int term, DayOfWeek dayOfWeek, boolean isDay1, List<Day> daysInTerm) {
         DayPattern pattern = getDayPattern(dayOfWeek, isDay1);
         List<Day> days = termPatternGroups.get(term).get(pattern);
@@ -474,8 +443,9 @@ public class DutyAssigner {
      * Maps a day of the week and Day1/Day2 status to a DayPattern.
      * Used for consistent pattern matching across the system.
      * 
-     * QoL Note:
-     * - Add new patterns here if schedule structure changes
+     * @param dayOfWeek The day of the week
+     * @param isDay1 Whether the day is Day 1
+     * @return The DayPattern for the given day and Day1/Day2 status
      */
     private DayPattern getDayPattern(DayOfWeek dayOfWeek, boolean isDay1) {
         return switch (dayOfWeek) {
@@ -491,10 +461,6 @@ public class DutyAssigner {
     /**
      * Prints pattern counts for debugging and verification.
      * Shows how many instances of each pattern exist in each term.
-     * 
-     * QoL Note:
-     * - Modify output format for different debugging needs
-     * - Add additional statistics as needed
      */
     private void printPatternCounts() {
         for (int term = 0; term < 4; term++) {
@@ -514,6 +480,9 @@ public class DutyAssigner {
 
     // /**
     //  * Prints a summary of teachers who haven't reached their maximum duties
+    //  * 
+    //  * Note:
+    //  * - This likely is printing out inaccurate information, as the teachers are per semester is being reset before this may be called
     //  */
     // private void printTeacherDutyCounts() {
     //     List<Teacher> teachersUnderMax = teachers.stream()
@@ -538,14 +507,18 @@ public class DutyAssigner {
 
     /**
      * Final pass assignment method that allows two teachers per duty
+     * 
+     * @param teacher The teacher to assign the duties to
      */
     private void assignDutiesForTeacherFinalPass(Teacher teacher) {
         if (teacher.getMaxDutiesPerSemester() == 0) {
-            System.out.println("Teacher " + teacher.getName() + " has no duties");
+            
+            // DEBUGGING, prints the teacher name, if they have no duties
+            //System.out.println("Teacher " + teacher.getName() + " has no duties");
             return;
         }
-        
-        System.out.println("Final pass for teacher: " + teacher.getName());
+        // DEBUGGING, prints the teacher name, if they are being assigned duties in the final pass
+        //System.out.println("Final pass for teacher: " + teacher.getName());
         List<String> classSchedule = teacher.getSchedule();
         
         for (int semester = 0; semester < 2; semester++) {
@@ -559,14 +532,24 @@ public class DutyAssigner {
             int numberOfDutiesNeeded = teacher.getMaxDutiesPerSemester();
             List<List<Day>> termDays = getTermDaysForSemester(semester);
             
-            // Try to assign duties in each term // TODO: this may be where the incorrect assignments are happening
-            // for (int termIndex = 0; termIndex < termDays.size(); termIndex++) {
-            //     if (teacher.getDutiesThisSemester() >= numberOfDutiesNeeded) break;
-            //     assignDutiesInTermFinalPass(teacher, termDays.get(termIndex), semester * 2 + termIndex, numberOfDutiesNeeded);
-            // }
+            // Try to assign duties in each term, loosening 1 teacher per duty rule to 2
+            // TODO: this may be where the incorrect assignments are happening, due to the way the terms are being processed, resetting the max number of duties per semester
+            for (int termIndex = 0; termIndex < termDays.size(); termIndex++) {
+                if (teacher.getDutiesThisSemester() >= numberOfDutiesNeeded) break;
+                assignDutiesInTermFinalPass(teacher, termDays.get(termIndex), semester * 2 + termIndex, numberOfDutiesNeeded);
+            }
         }
     }
 
+    /**
+     * Attempts to assign duties to a teacher in a specific term
+     * 
+     * @param teacher The teacher to assign the duties to
+     * @param daysInTerm The days in the term to assign the duties to
+     * @param term The term to assign the duties to
+     * @param numberOfDutiesNeeded The maximum number of duties needed
+     * @return boolean indicating if any duties were assigned
+     */
     private boolean assignDutiesInTermFinalPass(Teacher teacher, List<Day> daysInTerm, int term, int numberOfDutiesNeeded) {
         for (Day day : daysInTerm) {
             if (teacher.getDutiesThisSemester() >= numberOfDutiesNeeded) return false;
@@ -583,6 +566,18 @@ public class DutyAssigner {
         return false;
     }
 
+    /**
+     * Attempts to assign a specific duty to a teacher in a specific term
+     * 
+     * @param teacher The teacher to assign the duty to
+     * @param day The day containing the duty
+     * @param duty The specific duty to assign
+     * @param term The term to assign the duty to
+     * @param numberOfDutiesNeeded The maximum number of duties needed
+     * @return boolean indicating if the duty was assigned
+     * 
+     * Note: this can be consolidated with tryAssignDutyToTeacher, but I'm keeping it separate
+     */
     private boolean tryAssignDutyToTeacherFinalPass(Teacher teacher, Day day, Duty duty, int term, int numberOfDutiesNeeded) {
         if (duty == null || teacher.hasDutyAssigned(duty)) return false;
         

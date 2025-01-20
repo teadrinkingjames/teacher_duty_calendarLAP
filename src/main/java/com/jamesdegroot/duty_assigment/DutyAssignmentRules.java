@@ -42,7 +42,7 @@ public class DutyAssignmentRules {
     // Period mapping constants - maps duty slots to teacher schedule indices
     private static final int[] PERIOD_TO_SCHEDULE_MAP = {
         0,  // this is used as a conversion due to the way the schedule is stored
-        1,  // (it does not store the lunch slots)
+        1,  // (teacher schedule does not store the lunch slots duty does leading to this)
         1,  //
         2,  //
         2,  //
@@ -139,14 +139,17 @@ public class DutyAssignmentRules {
 
     /**
      * Checks if teacher has a class during the specified time slot
+     * 
+     * @param teacher The teacher to check
+     * @param timeSlot The time slot to check
+     * @return true if the teacher has a class during the specified time slot
      */
     private static boolean hasClassDuringTimeSlot(Teacher teacher, int timeSlot) {
         List<String> schedule = teacher.getSchedule();
-        // print schedule
+        // print schedule for debugging
         // for (String slot : schedule) {
         //     System.out.println(slot);
         // }
-
         // System.out.println("timeSlot: " + timeSlot);
         
         // Check if the time slot is valid

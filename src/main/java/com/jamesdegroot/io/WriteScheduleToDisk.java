@@ -79,8 +79,8 @@ public class WriteScheduleToDisk {
                                             "Term " + term,
                                             weekdayName,
                                             templateDuty.getName(),
-                                            duty1 != null ? String.join(", ", duty1.getDay1Teachers()) : "",
-                                            duty2 != null ? String.join(", ", duty2.getDay2Teachers()) : "");
+                                            duty1 != null ? String.join(" + ", duty1.getDay1Teachers()) : "", // This cant use commas because in the csv it will be read as different columns
+                                            duty2 != null ? String.join(" + ", duty2.getDay2Teachers()) : "");
                                     }
                                 }
                             }

@@ -38,8 +38,6 @@ import com.jamesdegroot.teacher.TeacherTypeEnum;
 
 public class GenerateDutyCalendar {
     public static final int NUM_OF_SEPERATORS_CHAR = 135; // maximum number of duties per semester
-    @SuppressWarnings("unused")
-    private File selectedFile;
     private List<Teacher> teachers;
     private Calendar calendar;
     private List<String> warnings = new ArrayList<>();
@@ -59,7 +57,6 @@ public class GenerateDutyCalendar {
      * @param file The CSV file containing teacher schedules
      */
     public void processFile(File file) {
-        this.selectedFile = file;
         teachers = ReadTeachersFromDisk.readTeachersNames(file.getAbsolutePath());
     }
     
@@ -101,8 +98,9 @@ public class GenerateDutyCalendar {
     
     /**
      * Prints a summary of the teacher schedule statuses.
+     * Debugging method, prints alot of information about the teachers and their schedules
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings("unused") // not currently used, commented out as it is not needed
     private void printSummary() {
         System.out.println("\nDetailed Teacher Schedules:");
         System.out.println("=".repeat(NUM_OF_SEPERATORS_CHAR));
@@ -191,10 +189,6 @@ public class GenerateDutyCalendar {
         }
     }
     
-    /**
-     * Gets the list of teachers.
-     * @return the list of teachers
-     */
     public List<Teacher> getTeachers() {
         return teachers;
     }
@@ -207,11 +201,7 @@ public class GenerateDutyCalendar {
     public boolean isSchoolDay(LocalDate date) {
         return calendar.isSchoolDay(date);
     }
-    
-    /**
-     * Gets the calendar.
-     * @return the calendar
-     */
+
     public Calendar getCalendar() {
         return calendar;
     }
@@ -223,6 +213,7 @@ public class GenerateDutyCalendar {
         dutyAssigner = new DutyAssigner(calendar, teachers);
         dutyAssigner.assignDuties();
         dutyAssigner.printDutySchedule();
+        // Debugging method, prints a summary of the teachers and their duties
         //printTeacherDutyCounts();
     }
     
@@ -300,7 +291,11 @@ public class GenerateDutyCalendar {
     
     /**
      * Prints a summary of teachers who haven't reached their maximum duties
+     * Debugging method, prints information about the teachers and their duties/max duties
+     * may be inaccurate as the dutiesthissemester variable is reset multiple times, 
+     * but it is a good way to see how many duties each teacher has
      */
+    @SuppressWarnings("unused") // not currently used, commented out as it is not needed
     private void printTeacherDutyCounts() {
         List<Teacher> teachersUnderMax = teachers.stream()
             .filter(t -> t.getDutiesThisSemester() < t.getMaxDutiesPerSemester())
